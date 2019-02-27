@@ -76,11 +76,12 @@ HOME = Path.home()
 
 def ezprompt_profile():
     """Add ezprompt to .profile."""
-    with open(str(HOME / '.profile'), 'a') as f:
+    with open(str(HOME / '.profile'), 'a') as f:  # py34 compatibility
         f.write(EZPROMPT)
 
 
 def main():
+    # convert path to str for py34 compatibility
     copyfile('/etc/skel/.bashrc', str(HOME / '.bashrc'))  # T131561
     copyfile('/etc/skel/.profile', str(HOME / '.profile'))
     ezprompt_profile()
