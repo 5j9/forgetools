@@ -1,7 +1,10 @@
 """Install Python."""
 
-from pathlib import Path
+
 from shutil import copyfile
+
+from commons import HOME, KUBERNETES
+
 
 EZPROMPT = r"""\
 # http://ezprompt.net/ START
@@ -71,19 +74,36 @@ export PS1="\[\e[33m\]\t\[\e[m\]\[\e[37m\]:\
 """
 
 
-HOME = Path.home()
-
-
 def ezprompt_profile():
     """Add ezprompt to .profile."""
-    with open(str(HOME / '.profile'), 'a') as f:  # py34 compatibility
+    with open(str(HOME + '/.profile'), 'a') as f:  # py34 compatibility
         f.write(EZPROMPT)
+
+
+def activate_python_in_profile():
+    if KUBERNETES:
+        with open(HOME + '/.profile', 'a') as f:
+            f.write(
+                '\n'
+                '# activate venv START\n'
+                'webservice --backend=kubernetes python shell'
+                '. {HOME}/www/python/venv/bin/activate\n'
+                '# activate venv END\n'.format(HOME=HOME)
+            )
+        return
+    with open(HOME + '/.profile', 'a') as f:
+        f.write(
+            '\n'
+            '# activate venv START\n'
+            '. $(ls -d ~/pythons/ve* | tail -1)/bin/activate\n'
+            '# activate venv END\n'
+        )
 
 
 def main():
     # convert path to str for py34 compatibility
-    copyfile('/etc/skel/.bashrc', str(HOME / '.bashrc'))  # T131561
-    copyfile('/etc/skel/.profile', str(HOME / '.profile'))
+    copyfile('/etc/skel/.bashrc', HOME + '/.bashrc')  # T131561
+    copyfile('/etc/skel/.profile', HOME + '/.profile')
     ezprompt_profile()
 
 
