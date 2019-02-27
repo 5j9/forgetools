@@ -1,7 +1,8 @@
 """Install Python."""
 
-
+from pathlib import Path
 from shutil import copyfile
+from warnings import warn
 
 from commons import HOME, KUBERNETES
 
@@ -82,14 +83,21 @@ def ezprompt_profile():
 
 def activate_python_in_profile():
     if KUBERNETES:
+        venv = HOME + '/www/python/venv'
+        if not Path(venv).exists():
+            warn(venv + ' does not exist.')
+            return
         with open(HOME + '/.profile', 'a') as f:
             f.write(
                 '\n'
                 '# activate venv START\n'
                 'webservice --backend=kubernetes python shell'
-                '. {HOME}/www/python/venv/bin/activate\n'
-                '# activate venv END\n'.format(HOME=HOME)
+                '. {venv}/bin/activate\n'
+                '# activate venv END\n'.format(venv=venv)
             )
+        return
+    if next(Path(HOME + '/pythons').glob('ve*'), None):
+        warn('No ve* was found in ~/pythons')
         return
     with open(HOME + '/.profile', 'a') as f:
         f.write(
@@ -105,6 +113,7 @@ def main():
     copyfile('/etc/skel/.bashrc', HOME + '/.bashrc')  # T131561
     copyfile('/etc/skel/.profile', HOME + '/.profile')
     ezprompt_profile()
+    activate_python_in_profile()
 
 
 if __name__ == '__main__':
