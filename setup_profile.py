@@ -1,8 +1,8 @@
 """Install Python."""
 
+from logging import warning
 from pathlib import Path
 from shutil import copyfile
-from warnings import warn
 
 from commons import HOME, KUBERNETES
 
@@ -85,7 +85,7 @@ def activate_python_in_profile():
     if KUBERNETES:
         venv = HOME + '/www/python/venv'
         if not Path(venv).exists():
-            warn(venv + ' does not exist.')
+            warning(venv + ' does not exist.')
             return
         with open(HOME + '/.profile', 'a') as f:
             f.write(
@@ -97,7 +97,7 @@ def activate_python_in_profile():
             )
         return
     if next(Path(HOME + '/pythons').glob('ve*'), None):
-        warn('No ve* was found in ~/pythons')
+        warning('No ve* was found in ~/pythons')
         return
     with open(HOME + '/.profile', 'a') as f:
         f.write(
