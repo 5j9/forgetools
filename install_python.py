@@ -42,18 +42,18 @@ def download_info(num_ver=None) -> tuple:
 def download_python(num_ver) -> tuple:
     """Download installer, extract it, return the installer dir and num_ver."""
     url, dot_ver = download_info(num_ver)
-    python_source_path = PYTHONS + '/Python-' + dot_ver
-    zip_path = python_source_path + '.tar.xz'
+    source_path = PYTHONS + '/Python-' + dot_ver
+    zip_path = source_path + '.tar.xz'
     with open(zip_path, 'wb') as f:
         f.write(urlopen(url).read())
     check_call('tar xf ' + zip_path, shell=True)
-    return python_source_path
+    return source_path
 
 
-def install_python(python_source_path, num_ver) -> None:
+def install_python(source_path, num_ver) -> None:
     """Install the requested python version."""
     check_call(
-        python_source_path + '/configure --prefix=' + PYTHONS + '/' + num_ver,
+        source_path + '/configure --prefix=' + PYTHONS + '/' + num_ver,
         shell=True)
     check_call('make', shell=True)
     check_call('make install', shell=True)
@@ -88,8 +88,8 @@ def main(num_ver):
         mkdir(PYTHONS)
     except FileExistsError:
         pass
-    python_source_path = download_python(num_ver)
-    install_python(python_source_path, num_ver)
+    source_path = download_python(num_ver)
+    install_python(source_path, num_ver)
     setup_vitual_env(num_ver)
     create_profle()
     activate_python_in_profile()
