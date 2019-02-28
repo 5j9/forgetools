@@ -114,6 +114,8 @@ def main():
     copyfile('/etc/skel/.profile', HOME + '/.profile')
     ezprompt_profile()
     activate_python_in_profile()
+    with open(HOME + '/.vimrc', 'w') as f:
+        f.write('syntax on')
 
 
 if __name__ == '__main__':
