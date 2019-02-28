@@ -10,8 +10,8 @@ from shutil import rmtree
 from re import search
 # Use `check_call` instead of `run` to make the code py34 compatible.
 from subprocess import check_call
-
-from requests import get
+# wget and requests are not available in containers; use curl or urlopen
+from urllib.request import urlopen
 
 from setup_profile import main as create_profle, activate_python_in_profile
 from commons import HOME, KUBERNETES
@@ -30,14 +30,13 @@ def download_info(num_ver=None) -> tuple:
             dot_ver,
             num_ver,
         )
-    downloads_text = get('https://www.python.org/downloads/').text
+    downloads = urlopen('https://www.python.org/downloads/').read()
     m = search(
-        r'href="(?P<url>https://www\.python\.org/ftp/python/'
-        r'(?P<dot_ver>\d+\.\d+\.\d+)/Python-(?P=dot_ver)\.tar\.xz)"',
-        downloads_text,
+        rb'href="(?P<url>https://www\.python\.org/ftp/python/'
+        rb'(?P<dot_ver>\d+\.\d+\.\d+)/Python-(?P=dot_ver)\.tar\.xz)"',
+        downloads,
     )
-    dot_ver = m.group('dot_ver')
-    return m.group('url'), dot_ver
+    return m.group('url').decode(), m.group('dot_ver').decode()
 
 
 def download_python(num_ver) -> tuple:
@@ -45,9 +44,8 @@ def download_python(num_ver) -> tuple:
     url, dot_ver = download_info(num_ver)
     python_source_path = PYTHONS + '/Python-' + dot_ver
     zip_path = python_source_path + '.tar.xz'
-    # wget is not available in kubernetes shell (only curl)
     with open(zip_path, 'wb') as f:
-        f.write(get(url).content)
+        f.write(urlopen(url).read())
     check_call('tar xf ' + zip_path, shell=True)
     return python_source_path
 
