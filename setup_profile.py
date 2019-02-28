@@ -96,7 +96,7 @@ def activate_python_in_profile():
                 '# activate venv END\n'.format(venv=venv)
             )
         return
-    if next(Path(HOME + '/pythons').glob('ve*'), None):
+    if next(Path(HOME + '/pythons').glob('ve*'), None) is None:
         warning('No ve* was found in ~/pythons')
         return
     with open(HOME + '/.profile', 'a') as f:
