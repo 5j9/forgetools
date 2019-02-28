@@ -4,9 +4,8 @@ from subprocess import check_call, CalledProcessError, DEVNULL
 HOME = expanduser('~')  # py34
 
 try:
-    check_call('webservice status', shell=True, stderr=DEVNULL)
+    check_call('kubectl get pods', shell=True)
 except CalledProcessError:
-    print('Working in a Kubernetes container.')
     KUBERNETES = True
 else:
     KUBERNETES = False
