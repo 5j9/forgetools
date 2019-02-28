@@ -5,7 +5,7 @@ HOME = str(Path.home())  # py34
 
 try:
     check_call('webservice status', shell=True)
-except CalledProcessError:
-    KUBERNETES = False
-else:
+except CalledProcessError:  # webservice is not available in Kubernetes pod
     KUBERNETES = True
+else:
+    KUBERNETES = False
