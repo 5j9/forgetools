@@ -53,7 +53,7 @@ def download_python(num_ver=None) -> tuple:
     """Download installer, extract it, return the installer dir and num_ver."""
     url, num_ver, dot_ver = download_info(num_ver)
     source_path = PYTHONS + '/Python-' + dot_ver
-    tar_file = tarfile_open(fileobj=urlopen(url))
+    tar_file = tarfile_open(fileobj=BytesIO(urlopen(url).read()))
     tar_file.extractall(PYTHONS)
     return num_ver, source_path
 
