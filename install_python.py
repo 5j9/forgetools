@@ -6,7 +6,7 @@ otherwise it'll be in ~/pythons/ve{num_ver}.
 
 from argparse import ArgumentParser
 from io import BytesIO
-from os import mkdir
+from os import mkdir, chdir, getcwd
 from shutil import rmtree
 from re import search
 # Use `check_call` instead of `run` to make the code py34 compatible.
@@ -60,11 +60,12 @@ def download_python(num_ver=None) -> tuple:
 
 def install_python(source_path, num_ver) -> None:
     """Install the requested python version."""
-    check_call(
-        source_path + '/configure --prefix=' + PYTHONS + '/' + num_ver,
-        shell=True)
-    check_call('make', shell=True)
-    check_call('make install', shell=True)
+    owd = getcwd()
+    chdir(source_path)
+    check_call('./configure --prefix=' + PYTHONS + '/' + num_ver, shell=True)
+    check_call('make  --directory=' + source_path, shell=True)
+    check_call('make install --directory=' + source_path, shell=True)
+    chdir(owd)
 
 
 def setup_vitual_env(num_ver, requirements=None):
