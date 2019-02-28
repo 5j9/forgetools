@@ -91,7 +91,7 @@ def activate_python_in_profile():
             f.write(
                 '\n'
                 '# activate venv START\n'
-                'webservice --backend=kubernetes python shell'
+                'webservice --backend=kubernetes python shell\n'
                 '. {venv}/bin/activate\n'
                 '# activate venv END\n'.format(venv=venv)
             )
