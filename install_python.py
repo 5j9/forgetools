@@ -21,7 +21,10 @@ PYTHONS = HOME + '/pythons'
 
 
 def download_info(num_ver=None) -> tuple:
-    """Return (url, dot_ver). Return the latest version info if not num_ver."""
+    """Return (url, num_ver, dot_ver).
+
+    Return the latest version info if num_ver is None.
+    """
     if num_ver:
         dot_ver = '.'.join(num_ver)
         return (
@@ -36,10 +39,11 @@ def download_info(num_ver=None) -> tuple:
         rb'(?P<dot_ver>\d+\.\d+\.\d+)/Python-(?P=dot_ver)\.tar\.xz)"',
         downloads,
     )
+    dot_ver = m.group('dot_ver').decode()
     return (
         m.group('url').decode(),
-        m.group('num_ver').decode(),
-        m.group('dot_ver').decode(),
+        dot_ver.replace('.', ''),
+        dot_ver,
     )
 
 
