@@ -5,11 +5,13 @@ otherwise it'll be in ~/pythons/ve{num_ver}.
 """
 
 from argparse import ArgumentParser
+from io import BytesIO
 from os import mkdir
 from shutil import rmtree
 from re import search
 # Use `check_call` instead of `run` to make the code py34 compatible.
 from subprocess import check_call
+from tarfile import open as tarfile_open
 # wget and requests are not available in containers; use curl or urlopen
 from urllib.request import urlopen
 
@@ -51,10 +53,8 @@ def download_python(num_ver=None) -> tuple:
     """Download installer, extract it, return the installer dir and num_ver."""
     url, num_ver, dot_ver = download_info(num_ver)
     source_path = PYTHONS + '/Python-' + dot_ver
-    zip_path = source_path + '.tar.xz'
-    with open(zip_path, 'wb') as f:
-        f.write(urlopen(url).read())
-    check_call('tar xf ' + zip_path, shell=True)
+    tar_file = tarfile_open(fileobj=urlopen(url))
+    tar_file.extractall(PYTHONS)
     return num_ver, source_path
 
 
