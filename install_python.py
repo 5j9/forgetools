@@ -27,8 +27,8 @@ def download_info(num_ver=None) -> tuple:
         return (
             'https://www.python.org/ftp/python/{dot_ver}/'
             'Python-{dot_ver}.tar.xz'.format(dot_ver=dot_ver),
-            dot_ver,
             num_ver,
+            dot_ver,
         )
     downloads = urlopen('https://www.python.org/downloads/').read()
     m = search(
@@ -36,18 +36,22 @@ def download_info(num_ver=None) -> tuple:
         rb'(?P<dot_ver>\d+\.\d+\.\d+)/Python-(?P=dot_ver)\.tar\.xz)"',
         downloads,
     )
-    return m.group('url').decode(), m.group('dot_ver').decode()
+    return (
+        m.group('url').decode(),
+        m.group('num_ver').decode(),
+        m.group('dot_ver').decode(),
+    )
 
 
-def download_python(num_ver) -> tuple:
+def download_python(num_ver=None) -> tuple:
     """Download installer, extract it, return the installer dir and num_ver."""
-    url, dot_ver = download_info(num_ver)
+    url, num_ver, dot_ver = download_info(num_ver)
     source_path = PYTHONS + '/Python-' + dot_ver
     zip_path = source_path + '.tar.xz'
     with open(zip_path, 'wb') as f:
         f.write(urlopen(url).read())
     check_call('tar xf ' + zip_path, shell=True)
-    return source_path
+    return num_ver, source_path
 
 
 def install_python(source_path, num_ver) -> None:
@@ -83,12 +87,12 @@ def setup_vitual_env(num_ver, requirements=None):
         check_call(script, shell=True)
 
 
-def main(num_ver):
+def main(num_ver=None):
     try:
         mkdir(PYTHONS)
     except FileExistsError:
         pass
-    source_path = download_python(num_ver)
+    num_ver, source_path = download_python(num_ver)
     install_python(source_path, num_ver)
     setup_vitual_env(num_ver)
     create_profle()
