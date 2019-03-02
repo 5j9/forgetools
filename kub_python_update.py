@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+"""Update the source and restart `webservice --backend=kubernetes python`"""
+
 from subprocess import check_call, check_output
 from os import chdir, remove
 from commons import HOME, POD_NAME

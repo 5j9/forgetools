@@ -15,7 +15,7 @@ from tarfile import open as tarfile_open
 # wget and requests are not available in containers; use curl or urlopen
 from urllib.request import urlopen
 
-from setup_profile import main as create_profle, activate_python_in_profile
+from profile import main as create_profle, activate_python_in_profile
 from commons import HOME, KUBERNETES
 
 

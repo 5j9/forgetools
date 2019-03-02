@@ -1,4 +1,4 @@
-"""Install Python."""
+"""Add .profile, .bashrc, and other commons settings."""
 
 from logging import warning
 from pathlib import Path
