@@ -16,7 +16,7 @@ from tarfile import open as tarfile_open
 # wget and requests are not available in containers; use curl or urlopen
 from urllib.request import urlopen
 
-from profile import main as create_profle, activate_python_in_profile
+from profile_setup import main as create_profle
 from commons import HOME, KUBERNETES
 
 
@@ -102,7 +102,6 @@ def main(num_ver=None):
     install_python(source_path, num_ver)
     setup_vitual_env(num_ver)
     create_profle()
-    activate_python_in_profile()
 
 
 if __name__ == '__main__':
