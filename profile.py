@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Add .profile, .bashrc, and other commons settings."""
 
 from logging import warning

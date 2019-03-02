@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Install Python, craete virtual environment, and add ve to .profile.
 
 If run from a kubernetes pod, install the venv in ~/www/python/venv,
