@@ -29,7 +29,7 @@ def install_requirements():
     check_call(upgrade_commands, shell=True)
 
 
-def rm_old_files():
+def rm_old_logs():
     try:
         remove(HOME + '/uwsgi.log')
     except FileNotFoundError:
@@ -41,7 +41,7 @@ def rm_old_files():
 
 
 def main():
-    rm_old_files()
+    rm_old_logs()
     pull_updates()
     install_requirements()
     check_output(
