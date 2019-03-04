@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Add .profile, .bashrc, and other commons settings."""
 
-from logging import warning
-from pathlib import Path
+from logging import info
+from glob import glob
 from shutil import copyfile
 
-from commons import HOME, KUBERNETES
+from commons import HOME
 
 
 EZPROMPT = r"""\
@@ -78,28 +78,14 @@ export PS1="\[\e[33m\]\t\[\e[m\]\[\e[37m\]:\
 
 def ezprompt_profile():
     """Add ezprompt to .profile."""
-    with open(str(HOME + '/.profile'), 'a') as f:  # py34 compatibility
+    with open(HOME + '/.profile', 'a') as f:  # py34 compatibility
         f.write(EZPROMPT)
 
 
 def activate_python_in_profile():
-    if KUBERNETES:
-        venv = HOME + '/www/python/venv'
-        if not Path(venv).exists():
-            warning(venv + ' does not exist.')
-            return
-        with open(HOME + '/.profile', 'a') as f:
-            f.write(
-                '\n'
-                '# activate venv START\n'
-                'command -v kubectl >/dev/null 2>&1'
-                ' && webservice --backend=kubernetes python shell'
-                ' && . {venv}/bin/activate\n'
-                '# activate venv END\n'.format(venv=venv)
-            )
-        return
-    if next(Path(HOME + '/pythons').glob('ve*'), None) is None:
-        warning('No ve* was found in ~/pythons')
+    if glob(HOME + '/pythons/ve*'):
+        info('No ve* was found in ~/pythons. '
+             'No venv actication will be added to profile.')
         return
     with open(HOME + '/.profile', 'a') as f:
         f.write(
