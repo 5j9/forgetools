@@ -83,7 +83,7 @@ def ezprompt_profile():
 
 
 def activate_python_in_profile():
-    if glob(HOME + '/pythons/ve*'):
+    if not glob(HOME + '/pythons/ve*'):
         info('No ve* was found in ~/pythons. '
              'No venv actication will be added to profile.')
         return
