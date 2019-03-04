@@ -16,8 +16,10 @@ VENV = HOME + '/www/python/venv'
 def get_repo_url() -> (str, bool):
     try:
         repo_url = check_output(
-            'git -C ~/wwww/python/src config --get remote.origin.url',
-            shell=True, stderr=DEVNULL)
+            [
+                'git', '-C', '~/wwww/python/src',
+                'config', '--get', 'remote.origin.url'
+            ], stderr=DEVNULL)
     except CalledProcessError:
         return input('Enter the URL of the git repository:'), False
     else:
@@ -30,37 +32,39 @@ def clone_repo():
         pull_updates()
         return
     try:
-        check_call('git clone --depth 1 ' + repo_url + ' ' + SRC, shell=True)
+        check_call(['git', 'clone', '--depth', '1', repo_url + ' ' + SRC])
     except CalledProcessError:  # SRC is not empty and git cannot clone
         rmtree(SRC)
-        check_call('git clone --depth 1 ' + repo_url + ' ' + SRC, shell=True)
+        check_call(['git', 'clone', '--depth', '1', repo_url + ' ' + SRC])
 
 
-def recreate_venv_and_start_webservice():
+def recreate_venv_and_restart_webservice():
     try:  # To prevent corrupt manifest file. See T164245.
         remove(HOME + '/service.manifest')
     except FileNotFoundError:
         pass
-    ve_commands = (
-        'python3 -m venv ~/www/python/venv'
-        '\npip install --upgrade pip'
-        '\npip install -Ur ~/www/python/src/requirements.txt'
-        '\nwebservice --backend=kubernetes python restart')
     try:
         rmtree(VENV)
     except FileNotFoundError:
         pass
-    if KUBERNETES:
-        check_call(ve_commands, shell=True)
-        return
-
     check_call(
-        'webservice --backend=kubernetes python shell\n' + ve_commands,
+        'webservice --backend=kubernetes python shell'
+        '\npython3 -m venv ~/www/python/venv'
+        '\npip install --upgrade pip'
+        '\npip install -Ur ~/www/python/src/requirements.txt'
+        '\nwebservice --backend=kubernetes python restart',
         shell=True)
 
 
-if __name__ == '__main__':
+def main():
+    if KUBERNETES:
+        raise RuntimeError(
+            'You need to run ' + __file__ + ' from the bastion host'
+            'so that it can control the webservice.')
     clone_repo()
     rm_old_logs()
-    recreate_venv_and_start_webservice()
-    print('All Done!')
+    recreate_venv_and_restart_webservice()
+
+
+if __name__ == '__main__':
+    main()
