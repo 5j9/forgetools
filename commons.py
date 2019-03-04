@@ -4,8 +4,7 @@ from subprocess import check_output, CalledProcessError
 HOME = expanduser('~')  # py34
 
 try:
-    POD_NAME = check_output(
-        ['command', '-v', 'kubectl', 'get', 'pod', '-o', 'name'])
+    POD_NAME = check_output(['kubectl', 'get', 'pod', '-o', 'name'])
 except CalledProcessError:
     KUBERNETES = True
     POD_NAME = None
