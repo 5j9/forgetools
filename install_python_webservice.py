@@ -5,12 +5,8 @@ from os import remove
 from shutil import rmtree
 from subprocess import check_call, check_output, CalledProcessError, DEVNULL
 
-from commons import HOME, KUBERNETES
-from update_kube_python import pull_updates, rm_old_logs
-
-
-SRC = HOME + '/www/python/src'
-VENV = HOME + '/www/python/venv'
+from commons import HOME, assert_webservice_control
+from update_python_webservice import pull_updates, rm_old_logs
 
 
 def get_repo_url() -> (str, bool):
@@ -31,11 +27,12 @@ def clone_repo():
     if repo_exists:
         pull_updates()
         return
+    src = HOME + '/www/python/src'
     try:
-        check_call(['git', 'clone', '--depth', '1', repo_url + ' ' + SRC])
+        check_call(['git', 'clone', '--depth', '1', repo_url + ' ' + src])
     except CalledProcessError:  # SRC is not empty and git cannot clone
-        rmtree(SRC)
-        check_call(['git', 'clone', '--depth', '1', repo_url + ' ' + SRC])
+        rmtree(src)
+        check_call(['git', 'clone', '--depth', '1', repo_url + ' ' + src])
 
 
 def recreate_venv_and_restart_webservice():
@@ -44,23 +41,20 @@ def recreate_venv_and_restart_webservice():
     except FileNotFoundError:
         pass
     try:
-        rmtree(VENV)
+        rmtree(HOME + '/www/python/venv')
     except FileNotFoundError:
         pass
     check_call(
-        'webservice --backend=kubernetes python shell'
-        '\npython3 -m venv ~/www/python/venv'
-        '\npip install --upgrade pip'
-        '\npip install -Ur ~/www/python/src/requirements.txt'
-        '\nwebservice --backend=kubernetes python restart',
+        'webservice --backend=kubernetes python shell\n'
+        'python3 -m venv ~/www/python/venv'
+        ' && pip install --upgrade pip'
+        ' && pip install -Ur ~/www/python/src/requirements.txt'
+        ' && webservice --backend=kubernetes python restart',
         shell=True)
 
 
 def main():
-    if KUBERNETES:
-        raise RuntimeError(
-            'You need to run ' + __file__ + ' from the bastion host'
-            'so that it can control the webservice.')
+    assert_webservice_control(__file__)
     clone_repo()
     rm_old_logs()
     recreate_venv_and_restart_webservice()
