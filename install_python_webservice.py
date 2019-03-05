@@ -29,10 +29,10 @@ def clone_repo():
         return
     src = HOME + '/www/python/src'
     try:
-        check_call(['git', 'clone', '--depth', '1', repo_url + ' ' + src])
+        check_call(['git', 'clone', '--depth', '1', repo_url, src])
     except CalledProcessError:  # SRC is not empty and git cannot clone
         rmtree(src)
-        check_call(['git', 'clone', '--depth', '1', repo_url + ' ' + src])
+        check_call(['git', 'clone', '--depth', '1', repo_url, src])
 
 
 def recreate_venv_and_restart_webservice():
