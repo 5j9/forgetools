@@ -2,6 +2,7 @@
 """Install the tool on toolforge."""
 
 from os import remove
+from runpy import run_path
 from shutil import rmtree
 from subprocess import check_call, check_output, CalledProcessError, DEVNULL
 
@@ -11,11 +12,10 @@ from update_python_webservice import pull_updates, rm_old_logs
 
 def get_repo_url() -> (str, bool):
     try:
-        repo_url = check_output(
-            [
-                'git', '-C', '~/wwww/python/src',
-                'config', '--get', 'remote.origin.url'
-            ], stderr=DEVNULL)
+        repo_url = check_output([
+            'git', '-C', '~/wwww/python/src',
+            'config', '--get', 'remote.origin.url'
+        ], stderr=DEVNULL)
     except CalledProcessError:
         return input('Enter the URL of the git repository:'), False
     else:
@@ -53,10 +53,18 @@ def recreate_venv_and_restart_webservice():
         shell=True)
 
 
+def run_install_script():
+    try:
+        run_path(HOME + '/www/python/src/install.py')
+    except FileNotFoundError:
+        pass
+
+
 def main():
     assert_webservice_control(__file__)
     clone_repo()
     rm_old_logs()
+    run_install_script()
     recreate_venv_and_restart_webservice()
 
 
