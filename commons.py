@@ -1,16 +1,9 @@
 from os.path import expanduser
+from platform import node
 from subprocess import check_output, CalledProcessError
 
 HOME = expanduser('~')  # py34
-
-try:
-    POD_NAME = check_output(['kubectl', 'get', 'pod', '-o', 'name'])
-except CalledProcessError:
-    KUBERNETES = True
-    POD_NAME = None
-else:
-    KUBERNETES = False
-    POD_NAME = POD_NAME[4:].rstrip().decode()
+KUBERNETES = node() == 'interactive'
 
 
 def assert_webservice_control(script_name):
@@ -19,3 +12,11 @@ def assert_webservice_control(script_name):
             'You need to run ' + script_name + ' from the bastion host'
             ' so that it can control the webservice.'
         )
+
+
+def get_pod_name():
+    try:
+        pod_name = check_output(['kubectl', 'get', 'pod', '-o', 'name'])
+    except CalledProcessError:
+        return None
+    return pod_name[4:].splitlines()[-1].decode()

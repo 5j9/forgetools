@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """Install the tool on toolforge."""
-
-from os import remove
+from logging import debug
 from runpy import run_path
 from shutil import rmtree
 from subprocess import check_call, check_output, CalledProcessError, DEVNULL
 
 from commons import HOME, assert_webservice_control
-from update_python_webservice import pull_updates, rm_old_logs
+from update_python_webservice import pull_updates, rm_old_logs, \
+    restart_webservice, install_requirements
 
 
 def get_repo_url() -> (str, bool):
@@ -35,37 +35,28 @@ def clone_repo():
         check_call(['git', 'clone', '--depth', '1', repo_url, src])
 
 
-def recreate_venv_and_restart_webservice():
-    try:  # To prevent corrupt manifest file. See T164245.
-        remove(HOME + '/service.manifest')
-    except FileNotFoundError:
-        pass
+def recreate_venv_and_install_requirements():
     try:
         rmtree(HOME + '/www/python/venv')
     except FileNotFoundError:
-        pass
-    check_call(
-        'webservice --backend=kubernetes python shell\n'
-        'python3 -m venv ~/www/python/venv'
-        ' && pip install --upgrade pip'
-        ' && pip install -Ur ~/www/python/src/requirements.txt'
-        ' && webservice --backend=kubernetes python restart',
-        shell=True)
+        debug('/www/python/venv does not exist')
+    install_requirements('python3 -m venv ~/www/python/venv')
 
 
 def run_install_script():
     try:
         run_path(HOME + '/www/python/src/install.py')
     except FileNotFoundError:
-        pass
+        debug('no intall.py')
 
 
 def main():
     assert_webservice_control(__file__)
     clone_repo()
     rm_old_logs()
+    recreate_venv_and_install_requirements()
     run_install_script()
-    recreate_venv_and_restart_webservice()
+    restart_webservice()
 
 
 if __name__ == '__main__':
