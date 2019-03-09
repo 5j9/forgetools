@@ -3,7 +3,7 @@
 from logging import debug
 from runpy import run_path
 from shutil import rmtree
-from subprocess import check_call, check_output, CalledProcessError, DEVNULL
+from subprocess import check_call, check_output, CalledProcessError
 
 from commons import HOME, assert_webservice_control
 from update_python_webservice import pull_updates, rm_old_logs, \
@@ -15,7 +15,7 @@ def get_repo_url() -> (str, bool):
         repo_url = check_output([
             'git', '-C', HOME + '/www/python/src',
             'config', '--get', 'remote.origin.url'
-        ], stderr=DEVNULL)
+        ])
     except CalledProcessError:
         return input('Enter the URL of the git repository:'), False
     else:

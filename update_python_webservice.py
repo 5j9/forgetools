@@ -3,7 +3,7 @@
 
 from commons import HOME, assert_webservice_control
 from os import chdir, remove
-from subprocess import check_call
+from subprocess import check_call, Popen, PIPE
 
 
 def pull_updates():
@@ -25,11 +25,11 @@ def install_requirements(shell_script_prepend: str = None):
     check_call([
         'kubectl', 'run', '--image',
         'docker-registry.tools.wmflabs.org/toollabs-python-web:latest',
-        'requirements-installer'])
+        'requirements-installer', '--restart=Never'])
     check_call([
         'kubectl', 'exec', 'requirements-installer', '--',
         'sh', '-c', shell_script])
-    check_call(['kubectl', 'delete', 'deployment', 'requirements-installer'])
+    check_call(['kubectl', 'delete', 'pod', 'requirements-installer'])
 
 
 def rm_old_logs():
