@@ -13,7 +13,7 @@ from update_python_webservice import pull_updates, rm_old_logs, \
 def get_repo_url() -> (str, bool):
     try:
         repo_url = check_output([
-            'git', '-C', '~/wwww/python/src',
+            'git', '-C', '~/www/python/src',
             'config', '--get', 'remote.origin.url'
         ], stderr=DEVNULL)
     except CalledProcessError:
