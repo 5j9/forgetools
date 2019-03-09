@@ -13,21 +13,24 @@ def pull_updates():
 
 
 def install_requirements(shell_script_prepend: str = None):
+    # ~ is / in the kubectl's shell
     shell_script = (
-        '. ~/www/python/venv/bin/activate '
+        '. ' + HOME + '/www/python/venv/bin/activate '
         ' && pip install --upgrade pip setuptools'
-        ' && pip install -Ur ~/www/python/src/requirements.txt')
+        ' && pip install -Ur ' + HOME + '/www/python/src/requirements.txt')
     if shell_script_prepend:
         shell_script = shell_script_prepend + ' && ' + shell_script
     # Todo: `kubectl run` creates a deployment, use `create` for a pod without
     # a deployment, see the link below for more info:
     # http://jamesdefabia.github.io/docs/user-guide/pods/single-container/
-    check_call([
-        'kubectl', 'run', '--image',
-        'docker-registry.tools.wmflabs.org/toollabs-python-web:latest',
-        'requirements-installer', '--restart=Never', '--stdin', '--command',
-        '--', 'sh', '-c', shell_script])
-    check_call(['kubectl', 'delete', 'pod', 'requirements-installer'])
+    try:
+        check_call([
+            'kubectl', 'run', '--image',
+            'docker-registry.tools.wmflabs.org/toollabs-python-web:latest',
+            'requirements-installer', '--restart=Never', '--stdin',
+            '--command', '--', 'sh', '-c', shell_script])
+    finally:
+        check_call(['kubectl', 'delete', 'pod', 'requirements-installer'])
 
 
 def rm_old_logs():
