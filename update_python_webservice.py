@@ -25,9 +25,8 @@ def install_requirements(shell_script_prepend: str = None):
     check_call([
         'kubectl', 'run', '--image',
         'docker-registry.tools.wmflabs.org/toollabs-python-web:latest',
-        'requirements-installer', '--', 'sh', '-c',
-        "'" + shell_script + '"'
-    ])
+        'requirements-installer'])
+    check_call(['kubectl', 'exec', '--', 'sh', '-c', shell_script])
     check_call(['kubectl', 'delete', 'deployment', 'requirements-installer'])
 
 
