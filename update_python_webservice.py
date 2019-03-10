@@ -26,7 +26,7 @@ def install_requirements(shell_script_prepend: bytes = None):
     try:
         p = Popen(
             ['webservice', '--backend=kubernetes', 'python', 'shell'],
-            stdin=slave, bufsize=1, universal_newlines=True)
+            stdin=slave, bufsize=1)
         write(master, shell_script)
         p.wait()
     finally:
