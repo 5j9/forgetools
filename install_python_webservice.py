@@ -40,7 +40,7 @@ def recreate_venv_and_install_requirements():
         rmtree(HOME + '/www/python/venv')
     except FileNotFoundError:
         debug('/www/python/venv does not exist')
-    install_requirements('python3 -m venv ' + HOME + '/www/python/venv')
+    install_requirements(b'python3 -m venv ~/www/python/venv')
 
 
 def run_install_script():

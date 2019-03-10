@@ -2,8 +2,9 @@
 """Update the source and restart `webservice --backend=kubernetes python`"""
 
 from commons import HOME, assert_webservice_control
-from os import chdir, remove
-from subprocess import check_call, Popen, PIPE
+from os import chdir, remove, write, close
+from pty import openpty
+from subprocess import check_call, Popen
 
 
 def pull_updates():
@@ -12,25 +13,25 @@ def pull_updates():
     check_call(('git', 'pull'))
 
 
-def install_requirements(shell_script_prepend: str = None):
+def install_requirements(shell_script_prepend: bytes = None):
     # ~ is / in the kubectl's shell
     shell_script = (
-        '. ' + HOME + '/www/python/venv/bin/activate '
-        ' && pip install --upgrade pip setuptools'
-        ' && pip install -Ur ' + HOME + '/www/python/src/requirements.txt')
+        b'. ~/www/python/venv/bin/activate '
+        b' && pip install --upgrade pip setuptools'
+        b' && pip install -Ur ~/www/python/src/requirements.txt'
+        b' && exit\n')
     if shell_script_prepend:
-        shell_script = shell_script_prepend + ' && ' + shell_script
-    # Todo: `kubectl run` creates a deployment, use `create` for a pod without
-    # a deployment, see the link below for more info:
-    # http://jamesdefabia.github.io/docs/user-guide/pods/single-container/
+        shell_script = shell_script_prepend + b' && ' + shell_script
+    master, slave = openpty()
     try:
-        check_call([
-            'kubectl', 'run', '--image',
-            'docker-registry.tools.wmflabs.org/toollabs-python-web:latest',
-            'requirements-installer', '--restart=Never', '--stdin',
-            '--command', '--', 'sh', '-c', shell_script])
+        p = Popen(
+            ['webservice', '--backend=kubernetes', 'python', 'shell'],
+            stdin=slave, bufsize=1, universal_newlines=True)
+        write(master, shell_script)
+        p.wait()
     finally:
-        check_call(['kubectl', 'delete', 'pod', 'requirements-installer'])
+        close(master)
+        close(slave)
 
 
 def rm_old_logs():
