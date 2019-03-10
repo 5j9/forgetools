@@ -22,6 +22,7 @@ def install_requirements(shell_script_prepend: bytes = None):
         b' && exit\n')
     if shell_script_prepend:
         shell_script = shell_script_prepend + b' && ' + shell_script
+    # Kubernetes terminates immediately on a non-tty process. Use pty instead.
     master, slave = openpty()
     try:
         p = Popen(
