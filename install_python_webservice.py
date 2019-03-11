@@ -45,7 +45,7 @@ def recreate_venv_and_install_requirements():
 
 def run_install_script():
     try:
-        run_path(HOME + '/www/python/src/install.py')
+        run_path(HOME + '/www/python/src/install.py', run_name='__main__')
     except FileNotFoundError:
         debug('no install.py')
 
