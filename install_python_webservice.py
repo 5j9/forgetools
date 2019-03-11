@@ -47,7 +47,7 @@ def run_install_script():
     try:
         run_path(HOME + '/www/python/src/install.py')
     except FileNotFoundError:
-        debug('no intall.py')
+        debug('no install.py')
 
 
 def main():

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Add .profile, .bashrc, and other commons settings."""
 
-from logging import info
 from glob import glob
+from logging import info
 
 from commons import HOME
 
