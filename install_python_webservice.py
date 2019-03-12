@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 """Install the tool on toolforge."""
 from logging import debug
-from runpy import run_path
 from shutil import rmtree
 from subprocess import check_call, check_output, CalledProcessError
 
 from commons import HOME, assert_webservice_control
 from update_python_webservice import pull_updates, rm_old_logs, \
-    restart_webservice, install_requirements
+    restart_webservice, install_requirements, run_install_script
 
 
 def get_repo_url() -> (str, bool):
@@ -41,13 +40,6 @@ def recreate_venv_and_install_requirements():
     except FileNotFoundError:
         debug('/www/python/venv does not exist')
     install_requirements(b'python3 -m venv ~/www/python/venv')
-
-
-def run_install_script():
-    try:
-        run_path(HOME + '/www/python/src/install.py', run_name='__main__')
-    except FileNotFoundError:
-        debug('no install.py')
 
 
 def main():

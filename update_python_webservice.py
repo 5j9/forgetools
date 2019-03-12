@@ -2,8 +2,10 @@
 """Update the source and restart `webservice --backend=kubernetes python`"""
 
 from commons import HOME, assert_webservice_control
+from logging import debug
 from os import chdir, remove, write, close
 from pty import openpty
+from runpy import run_path
 from subprocess import check_call, Popen
 
 
@@ -60,6 +62,13 @@ def main():
     pull_updates()
     install_requirements()
     restart_webservice()
+
+
+def run_install_script():
+    try:
+        run_path(HOME + '/www/python/src/install.py', run_name='__main__')
+    except FileNotFoundError:
+        debug('no install.py')
 
 
 if __name__ == '__main__':
