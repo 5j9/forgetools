@@ -56,19 +56,20 @@ def restart_webservice():
     check_call(['webservice', '--backend=kubernetes', 'python', 'restart'])
 
 
-def main():
-    assert_webservice_control(__file__)
-    rm_old_logs()
-    pull_updates()
-    install_requirements()
-    restart_webservice()
-
-
 def run_install_script():
     try:
         run_path(HOME + '/www/python/src/install.py', run_name='__main__')
     except FileNotFoundError:
         debug('no install.py')
+
+
+def main():
+    assert_webservice_control(__file__)
+    rm_old_logs()
+    pull_updates()
+    install_requirements()
+    run_install_script()
+    restart_webservice()
 
 
 if __name__ == '__main__':
