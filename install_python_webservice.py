@@ -13,8 +13,7 @@ def get_repo_url() -> (str, bool):
     try:
         repo_url = check_output([
             'git', '-C', HOME + '/www/python/src',
-            'config', '--get', 'remote.origin.url'
-        ])
+            'config', '--get', 'remote.origin.url'])
     except CalledProcessError:
         return input('Enter the URL of the git repository:'), False
     else:

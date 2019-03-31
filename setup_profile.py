@@ -89,7 +89,11 @@ def write_profile():
 
     with open('/etc/skel/.profile', 'rb') as profile_skel:
         with open(HOME + '/.profile', 'wb') as profile:
-            profile.write(profile_skel.read() + EZPROMPT + activate_venv)
+            profile.write(
+                profile_skel.read()
+                + EZPROMPT
+                + activate_venv
+                + b'set -o vi\n')
 
 
 def write_bashrc():
