@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Update the source and restart `webservice --backend=kubernetes python`"""
+"""Update the source and restart `webservice --backend=kubernetes python3.5`"""
 
 from commons import HOME, assert_webservice_control
 from logging import debug
@@ -28,7 +28,7 @@ def install_requirements(shell_script_prepend: bytes = None):
     master, slave = openpty()
     try:
         p = Popen(
-            ['webservice', '--backend=kubernetes', 'python', 'shell'],
+            ['webservice', '--backend=kubernetes', 'python3.5', 'shell'],
             stdin=slave, bufsize=1)
         write(master, shell_script)
         p.wait()
@@ -53,7 +53,7 @@ def restart_webservice():
         remove(HOME + '/service.manifest')
     except FileNotFoundError:
         pass
-    check_call(['webservice', '--backend=kubernetes', 'python', 'restart'])
+    check_call(['webservice', '--backend=kubernetes', 'python3.5', 'restart'])
 
 
 def run_install_script():
