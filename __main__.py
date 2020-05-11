@@ -1,8 +1,24 @@
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
+from os import execv
+from os.path import dirname
+from sys import executable, argv
+from subprocess import check_output
+
+
+def update():
+    stdout = check_output(('git', '-C', dirname(__file__), 'pull'))
+    if b'files changed,' in stdout:
+        print('restarting the current process')
+        # about the second executable: stackoverflow.com/questions/61728339
+        execv(executable, [executable] + argv + ['--no-git-pull'])
+        raise RuntimeError('This line should never be run!')
 
 
 def get_parser():
     parser = ArgumentParser()
+    parser.add_argument(
+        '--no-git-pull', action='store_true',
+        help='do not perform git pull for forgetools')
     sub_parsers = parser.add_subparsers(dest='sub_command')
     python = sub_parsers.add_parser(
         'python', help='install Python')
@@ -20,14 +36,15 @@ def get_parser():
     webservice.add_argument(
         'install_or_update',
         help='install or update webservice.',
-        choices=['update', 'u', 'install', 'i']
-    )
+        choices=['update', 'u', 'install', 'i'])
     return parser
 
 
 def main():
     parser = get_parser()
     args = parser.parse_args()
+    if not args.no_git_pull:
+        update()
     sub_command = args.sub_command
     if sub_command == 'python':
         from install_python import main as install_python
