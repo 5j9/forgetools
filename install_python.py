@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Install Python, craete virtual environment, and add ve to .profile.
+"""Install Python, create virtual environment, and add ve to .profile.
 
 If run from a kubernetes pod, install the venv in ~/www/python/venv,
 otherwise it'll be in ~/pythons/ve{num_ver}.
@@ -16,7 +16,7 @@ from tarfile import open as tarfile_open
 # wget and requests are not available in containers; use curl or urlopen
 from urllib.request import urlopen
 
-from setup_profile import main as create_profle
+from setup_profile import main as create_profile
 from commons import HOME, KUBERNETES
 
 
@@ -101,7 +101,7 @@ def main(num_ver=None):
     num_ver, source_path = download_python(num_ver)
     install_python(source_path, num_ver)
     setup_vitual_env(num_ver)
-    create_profle()
+    create_profile()
 
 
 if __name__ == '__main__':
