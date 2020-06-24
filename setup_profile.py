@@ -84,7 +84,7 @@ def write_profile():
             b'\n')
     else:
         info('No ve* was found in ~/pythons. '
-             'No venv actication will be added to profile.')
+             'No venv activation will be added to profile.')
         activate_venv = b''
 
     with open('/etc/skel/.profile', 'rb') as profile_skel:
