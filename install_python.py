@@ -34,20 +34,17 @@ def download_info(num_ver=None) -> tuple:
             'https://www.python.org/ftp/python/{dot_ver}/'
             'Python-{dot_ver}.tar.xz'.format(dot_ver=dot_ver),
             num_ver,
-            dot_ver,
-        )
+            dot_ver)
     downloads = urlopen('https://www.python.org/downloads/').read()
     m = search(
         rb'href="(?P<url>https://www\.python\.org/ftp/python/'
         rb'(?P<dot_ver>\d+\.\d+\.\d+)/Python-(?P=dot_ver)\.tar\.xz)"',
-        downloads,
-    )
+        downloads)
     dot_ver = m.group('dot_ver').decode()
     return (
         m.group('url').decode(),
         dot_ver.replace('.', ''),
-        dot_ver,
-    )
+        dot_ver)
 
 
 def download_python(num_ver=None) -> tuple:
