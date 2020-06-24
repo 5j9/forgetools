@@ -59,7 +59,7 @@ def install_python(source_path, ver) -> None:
     chdir(owd)
 
 
-def setup_vitual_env(ver, requirements=None):
+def setup_virtual_env(ver, requirements=None):
     """Create a virtual env using {num_ver}/bin/python3 in ve{num_ver} dir."""
     python3 = PYTHONS + '/' + ver + '/bin/python3'
     if KUBERNETES:
@@ -90,7 +90,7 @@ def main(ver=None):
         pass
     source_path = download_python(ver)
     install_python(source_path, ver)
-    setup_vitual_env(ver)
+    setup_virtual_env(ver)
     create_profile()
 
 
