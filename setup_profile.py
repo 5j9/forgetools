@@ -92,8 +92,7 @@ def write_profile():
             profile.write(
                 profile_skel.read()
                 + EZPROMPT
-                + activate_venv
-                + b'set -o vi\n')
+                + activate_venv)
 
 
 def write_bashrc():
