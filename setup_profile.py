@@ -105,16 +105,8 @@ def write_bashrc():
 
 VIMRC = b'''\
 color elflord
-filetype indent plugin on
 syntax on
-
-set ruler
-set showcmd
 set wildmenu
-
-set backspace=indent,eol,start
-set autoindent
-
 set shiftwidth=4
 set tabstop=4
 '''
