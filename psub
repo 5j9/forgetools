@@ -1,0 +1,61 @@
+#!/usr/bin/env python
+"""Submit python job to Grid Engine using jsub.
+
+Used the latest version of python venv found in ~/pythons/ve*.
+Save err and out logs in the same directory as the target program.
+Clear err and out logs before submitting the job.
+Treat any options after the program name as an argument for program so that it
+    won't cause error in jsub.
+Note: only a few of the main jsub args are supported. See JSUB_ARG_LEN.
+"""
+from subprocess import check_call
+from path import Path
+from sys import argv
+
+
+JSUB_ARG_LEN = {
+    '-mem': 2,
+    '-quiet': 1,
+    '-j': 2,
+    '-sync': 2,
+    '-N': 2,
+    '-M': 2,
+    '-m': 2,
+}.get
+
+
+def main():
+    found_jsub_args = set()
+    program_index = 1
+    argv_len = len(argv)
+    while program_index < argv_len:
+        arg = argv[program_index]
+        if (arg_len := JSUB_ARG_LEN(arg)) is None:
+            break
+        found_jsub_args.add(arg)
+        program_index += arg_len
+    else:
+        raise SystemExit('no program is specified')
+
+    program = Path(arg).expand().abspath()
+    args = ' '.join(argv[program_index + 1:])
+    program_dir = program.parent
+    (program_dir / 'out.log').open('w').close()
+    (program_dir / 'err.log').open('w').close()
+    program_dir.chdir()
+    ve = sorted(Path('~/pythons/').expanduser().glob('ve*'))[- 1]
+    jsub_args = argv[1:program_index]
+    if '-N' not in found_jsub_args:
+        jsub_args += ('-N', program.name)
+    if '-m' not in found_jsub_args:
+        jsub_args += ('-m', 'a')
+    check_call((
+        'jsub', *jsub_args,
+        '-once', '-cwd',
+        '-stderr', '-e', './err.log', '-o', './out.log',
+        ve / 'bin/python', f'{program} {args}'
+    ))
+
+
+if __name__ == '__main__':
+    main()
