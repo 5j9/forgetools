@@ -39,17 +39,17 @@ def download_info(ver=None) -> tuple:
     return g('dot_ver').decode(), g('url').decode()
 
 
-def download_python(ver=None) -> str:
+def download_python(ver) -> (str, str):
     """Download installer, extract it, return the installer dir."""
     ver, url = download_info(ver)
     source_path = PYTHONS + '/Python-' + ver
     print(url)
     tar_file = tarfile_open(fileobj=BytesIO(urlopen(url).read()))
     tar_file.extractall(PYTHONS)
-    return source_path
+    return ver, source_path
 
 
-def install_python(source_path, ver) -> None:
+def install_python(source_path: str, ver: str) -> None:
     """Install the requested python version."""
     owd = getcwd()
     chdir(source_path)
@@ -88,7 +88,7 @@ def main(ver=None):
         mkdir(PYTHONS)
     except FileExistsError:
         pass
-    source_path = download_python(ver)
+    ver, source_path = download_python(ver)
     install_python(source_path, ver)
     setup_virtual_env(ver)
     create_profile()
