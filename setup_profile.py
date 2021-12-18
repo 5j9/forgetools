@@ -79,7 +79,7 @@ def write_profile():
     if glob(HOME + '/pythons/ve*'):
         activate_venv = (
             b'\n# activate venv START'
-            b'\n. $(ls -d ~/pythons/ve* | tail -1)/bin/activate'
+            b'\n. $(ls -dv ~/pythons/ve* | tail -1)/bin/activate'
             b'\n# activate venv END'
             b'\n')
     else:
