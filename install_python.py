@@ -25,7 +25,7 @@ PYTHONS = HOME + '/pythons'
 
 
 def download_info(ver=None) -> tuple:
-    """Return the url of the latest version if num_ver is None."""
+    """Return the url of the latest version if `ver` is None."""
     if ver:
         main_ver = '.'.join(str(v) for v in StrictVersion(ver).version)
         return ver, (
@@ -43,7 +43,7 @@ def download_python(ver) -> (str, str):
     """Download installer, extract it, return the installer dir."""
     ver, url = download_info(ver)
     source_path = PYTHONS + '/Python-' + ver
-    print(url)
+    print(f'{url=}')
     tar_file = tarfile_open(fileobj=BytesIO(urlopen(url).read()))
     tar_file.extractall(PYTHONS)
     return ver, source_path
