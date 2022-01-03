@@ -9,7 +9,7 @@ from runpy import run_path
 from subprocess import check_call, Popen
 
 
-container_type = 'python3.7'
+container_type = 'python3.9'
 
 
 def pull_updates():
