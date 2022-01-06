@@ -36,13 +36,29 @@ def write_bashrc():
                 b'HISTCONTROL=ignoreboth:erasedups', 1))
 
 
+def write_gitconfig():
+    from configparser import ConfigParser
+
+    updates = ConfigParser()
+    with open(DATAFILES + '.gitconfig', encoding='utf8') as f:
+        updates.read_file(f)
+
+    home_config = ConfigParser()
+    with open(HOME + '.gitconfig', 'a+', encoding='utf8') as f:
+        f.seek(0)
+        home_config.read_file(f)
+        f.seek(0)
+        home_config.update(updates)
+        f.truncate()
+        home_config.write(f)
+
+
 def main():
     write_bashrc()
     write_profile()
     copyfile(DATAFILES + '.vimrc', HOME + '.vimrc')
     copyfile(DATAFILES + '.selected_editor', HOME + '.selected_editor')
-    import git_config
-    git_config.main()
+    write_gitconfig()
 
 
 if __name__ == '__main__':
