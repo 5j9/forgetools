@@ -1,9 +1,10 @@
-from os.path import expanduser
+from os.path import expanduser, dirname
 from platform import node
 from subprocess import check_output, CalledProcessError
 
 HOME = expanduser('~')  # py34
 KUBERNETES = node() == 'interactive'
+DATAFILES = dirname(__file__) + 'datafiles/'
 
 
 def assert_webservice_control(script_name):
