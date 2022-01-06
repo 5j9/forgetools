@@ -1,0 +1,4 @@
+
+# activate venv START
+. $(ls -dv ~/pythons/ve* | tail -1)/bin/activate
+# activate venv END

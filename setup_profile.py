@@ -10,17 +10,14 @@ from commons import HOME, DATAFILES
 
 def write_profile():
     if glob(HOME + 'pythons/ve*'):
-        activate_venv = (
-            b'\n# activate venv START'
-            b'\n. $(ls -dv ~/pythons/ve* | tail -1)/bin/activate'
-            b'\n# activate venv END'
-            b'\n')
+        with open(DATAFILES + '.profile.venv', 'rb') as f:
+            activate_venv = f.read()
     else:
         info('No ve* was found in ~/pythons. '
              'No venv activation will be added to profile.')
         activate_venv = b''
 
-    with open(DATAFILES + '.profile.ezprompt', 'rb', encoding='utf8') as f:
+    with open(DATAFILES + '.profile.ezprompt', 'rb') as f:
         ezprompt = f.read()
 
     with open('/etc/skel/.profile', 'rb') as profile_skel:
