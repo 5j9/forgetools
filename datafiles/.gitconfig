@@ -36,6 +36,7 @@ pf = push --force
 pr = pull --rebase
 prs = pull --recurse-submodules
 pt = push --tag
+rb = rebase
 rba = rebase --abort
 rbc = rebase --continue
 rbm = rebase master
