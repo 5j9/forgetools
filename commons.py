@@ -4,7 +4,8 @@ from subprocess import check_output, CalledProcessError
 
 HOME = expanduser('~') + '/'
 KUBERNETES = node() == 'interactive'
-DATAFILES = dirname(__file__) + 'datafiles/'
+FORGETOOLS = dirname(__file__) + '/'
+DATAFILES = FORGETOOLS + 'datafiles/'
 
 
 def assert_webservice_control(script_name):

@@ -1,12 +1,13 @@
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 from os import execv
-from os.path import dirname
 from sys import executable, argv
 from subprocess import check_output
 
+from commons import FORGETOOLS
+
 
 def update():
-    stdout = check_output(('git', '-C', dirname(__file__), 'pull'))
+    stdout = check_output(('git', '-C', FORGETOOLS, 'pull'))
     if b'files changed,' in stdout:
         print('restarting the current process')
         # about the second executable: stackoverflow.com/questions/61728339
