@@ -32,6 +32,7 @@ dm = diff master
 dt = difftool
 lg = log --graph --oneline --all
 p = pull
+pf = push --force
 pr = pull --rebase
 prs = pull --recurse-submodules
 pt = push --tag
