@@ -58,6 +58,7 @@ def main():
     write_profile()
     copyfile(DATAFILES + '.vimrc', HOME + '.vimrc')
     copyfile(DATAFILES + '.selected_editor', HOME + '.selected_editor')
+    copyfile(DATAFILES + '.gitignore_global', HOME + '.gitignore_global')
     write_gitconfig()
 
 
