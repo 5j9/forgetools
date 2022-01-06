@@ -51,3 +51,4 @@ sp = stash pop
 ssa = stash save
 ssh = stash show
 ssp = stash show --patch
+v = --version
