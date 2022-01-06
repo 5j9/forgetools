@@ -51,8 +51,8 @@ def main():
         from install_python import main as install_python
         install_python(args.pyver)
     elif sub_command == 'profile':
-        from setup_profile import main as setup_profile
-        setup_profile()
+        import dotfiles
+        dotfiles.main()
     elif sub_command == 'webservice':
         if args.install_or_update in {'i', 'install'}:
             from install_python_webservice import main as install_webservice

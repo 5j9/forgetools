@@ -17,7 +17,6 @@ from tarfile import open as tarfile_open
 # wget and requests are not available in containers; use curl or urlopen
 from urllib.request import urlopen
 
-from setup_profile import main as create_profile
 from commons import HOME, KUBERNETES
 
 
@@ -91,7 +90,8 @@ def main(ver=None):
     ver, source_path = download_python(ver)
     install_python(source_path, ver)
     setup_virtual_env(ver)
-    create_profile()
+    import dotfiles
+    dotfiles.main()
 
 
 if __name__ == '__main__':

@@ -41,6 +41,8 @@ def main():
     write_profile()
     copyfile(DATAFILES + '.vimrc', HOME + '.vimrc')
     copyfile(DATAFILES + '.selected_editor', HOME + '.selected_editor')
+    import git_config
+    git_config.main()
 
 
 if __name__ == '__main__':
