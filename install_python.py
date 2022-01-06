@@ -21,7 +21,7 @@ from setup_profile import main as create_profile
 from commons import HOME, KUBERNETES
 
 
-PYTHONS = HOME + '/pythons'
+PYTHONS = HOME + 'pythons'
 
 
 def download_info(ver=None) -> tuple:
@@ -63,7 +63,7 @@ def setup_virtual_env(ver, requirements=None):
     """Create a virtual env using {num_ver}/bin/python3 in ve{num_ver} dir."""
     python3 = PYTHONS + '/' + ver + '/bin/python3'
     if KUBERNETES:
-        venv = HOME + '/www/python/venv'
+        venv = HOME + 'www/python/venv'
         try:
             # `webservice` must be stopped before deleting the old venv?
             # Note however that we are in webservice already.

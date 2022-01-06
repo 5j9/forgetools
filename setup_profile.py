@@ -9,7 +9,7 @@ from commons import HOME, DATAFILES
 
 
 def write_profile():
-    if glob(HOME + '/pythons/ve*'):
+    if glob(HOME + 'pythons/ve*'):
         activate_venv = (
             b'\n# activate venv START'
             b'\n. $(ls -dv ~/pythons/ve* | tail -1)/bin/activate'
@@ -24,7 +24,7 @@ def write_profile():
         ezprompt = f.read()
 
     with open('/etc/skel/.profile', 'rb') as profile_skel:
-        with open(HOME + '/.profile', 'wb') as profile:
+        with open(HOME + '.profile', 'wb') as profile:
             profile.write(
                 profile_skel.read()
                 + ezprompt
@@ -33,7 +33,7 @@ def write_profile():
 
 def write_bashrc():
     with open('/etc/skel/.bashrc', 'rb') as bashrc_skel:  # T131561
-        with open(HOME + '/.bashrc', 'wb') as bashrc:
+        with open(HOME + '.bashrc', 'wb') as bashrc:
             bashrc.write(bashrc_skel.read().replace(
                 b'HISTCONTROL=ignoredups:ignorespace',
                 b'HISTCONTROL=ignoreboth:erasedups', 1))
@@ -42,8 +42,8 @@ def write_bashrc():
 def main():
     write_bashrc()
     write_profile()
-    copyfile(DATAFILES + '.vimrc', HOME + '/.vimrc')
-    copyfile(DATAFILES + '.selected_editor', HOME + '/.selected_editor')
+    copyfile(DATAFILES + '.vimrc', HOME + '.vimrc')
+    copyfile(DATAFILES + '.selected_editor', HOME + '.selected_editor')
 
 
 if __name__ == '__main__':

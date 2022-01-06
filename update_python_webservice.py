@@ -13,7 +13,7 @@ container_type = 'python3.9'
 
 
 def pull_updates():
-    chdir(HOME + '/www/python/src')
+    chdir(HOME + 'www/python/src')
     check_call(('git', 'reset', '--hard'))
     check_call(('git', 'pull'))
 
@@ -42,18 +42,18 @@ def install_requirements(shell_script_prepend: bytes = None):
 
 def rm_old_logs():
     try:
-        remove(HOME + '/uwsgi.log')
+        remove(HOME + 'uwsgi.log')
     except FileNotFoundError:
         pass
     try:
-        remove(HOME + '/error.log')
+        remove(HOME + 'error.log')
     except FileNotFoundError:
         pass
 
 
 def restart_webservice():
     try:  # To prevent corrupt manifest file. See T164245.
-        remove(HOME + '/service.manifest')
+        remove(HOME + 'service.manifest')
     except FileNotFoundError:
         pass
     check_call([
@@ -62,7 +62,7 @@ def restart_webservice():
 
 def run_install_script():
     try:
-        run_path(HOME + '/www/python/src/install.py', run_name='__main__')
+        run_path(HOME + 'www/python/src/install.py', run_name='__main__')
     except FileNotFoundError:
         debug('no install.py')
 

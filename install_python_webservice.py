@@ -12,7 +12,7 @@ from update_python_webservice import pull_updates, rm_old_logs, \
 def get_repo_url() -> (str, bool):
     try:
         repo_url = check_output([
-            'git', '-C', HOME + '/www/python/src',
+            'git', '-C', HOME + 'www/python/src',
             'config', '--get', 'remote.origin.url'])
     except CalledProcessError:
         return input('Enter the URL of the git repository:'), False
@@ -25,7 +25,7 @@ def clone_repo():
     if repo_exists:
         pull_updates()
         return
-    src = HOME + '/www/python/src'
+    src = HOME + 'www/python/src'
     try:
         check_call(['git', 'clone', '--depth', '1', repo_url, src])
     except CalledProcessError:  # SRC is not empty and git cannot clone
@@ -35,7 +35,7 @@ def clone_repo():
 
 def recreate_venv_and_install_requirements():
     try:
-        rmtree(HOME + '/www/python/venv')
+        rmtree(HOME + 'www/python/venv')
     except FileNotFoundError:
         debug('/www/python/venv does not exist')
     install_requirements(b'python3 -m venv ~/www/python/venv')

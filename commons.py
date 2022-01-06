@@ -2,7 +2,7 @@ from os.path import expanduser, dirname
 from platform import node
 from subprocess import check_output, CalledProcessError
 
-HOME = expanduser('~')  # py34
+HOME = expanduser('~') + '/'
 KUBERNETES = node() == 'interactive'
 DATAFILES = dirname(__file__) + 'datafiles/'
 
