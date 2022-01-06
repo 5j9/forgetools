@@ -26,7 +26,8 @@ def get_parser():
     python.add_argument(
         '--pyver', help='The desired Python version, e.g. 372.')
     sub_parsers.add_parser(
-        'profile', help='Create ~/.profile and other user settings.')
+        'dotfiles',
+        help='Create ~/.profile, .gitconfig and other user settings.')
     webservice = sub_parsers.add_parser(
         'webservice', help='webservice-related functions',
         formatter_class=ArgumentDefaultsHelpFormatter)
@@ -50,7 +51,7 @@ def main():
     if sub_command == 'python':
         from install_python import main as install_python
         install_python(args.pyver)
-    elif sub_command == 'profile':
+    elif sub_command == 'dotfiles':
         import dotfiles
         dotfiles.main()
     elif sub_command == 'webservice':
