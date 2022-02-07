@@ -23,7 +23,7 @@ def install_requirements(shell_script_prepend: bytes = None):
     shell_script = (
         b'. ~/www/python/venv/bin/activate '
         b' && pip install --upgrade pip setuptools'
-        b' && pip install -Ur ~/www/python/src/remote-server-requirements.txt'
+        b' && pip install -Ur ~/www/python/src/requirements.txt'
         b' && exit\n')
     if shell_script_prepend:
         shell_script = shell_script_prepend + b' && ' + shell_script
