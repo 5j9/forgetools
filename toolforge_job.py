@@ -42,7 +42,7 @@ def schedule(job_path: Path, daily=False):
     command = f'cd {job_path.parent} '
     if (job_dir / 'pyvenv').exists():
         command += '&& . pyvenv/bin/activate '
-    command += f'&& python3 {job_path} '
+    command += f'&& python {job_path} '
 
     args = [
         'toolforge-jobs',
