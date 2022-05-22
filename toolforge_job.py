@@ -11,7 +11,7 @@ def prepare(job_path: Path):
         'run',
         'bootstrap',  # name
         '--command',
-        f'cd {job_path.parent} && {FORGETOOLS}toolforge_job_boostrap.sh',
+        f'cd {job_path.parent} && {FORGETOOLS}toolforge_job_bootstrap.sh',
         '--image', 'tf-python39',
         '--wait',
     ])
