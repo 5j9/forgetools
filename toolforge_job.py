@@ -6,7 +6,7 @@ def prepare(job_path: Path):
     from commons import FORGETOOLS
 
     bootstrap = Path(FORGETOOLS + 'toolforge_job_bootstrap.sh')
-    bootstrap.chmod(0o770)
+    bootstrap.chmod(0o771)
 
     # create venv
     check_call([
