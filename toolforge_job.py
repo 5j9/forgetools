@@ -20,7 +20,11 @@ def prepare(job_path: Path):
         'run',
         'bootstrap',  # name
         '--command',
-        f'cd {job_dir} && {bootstrap}',
+        f'cd {job_dir} '
+        '&& python3 -m venv pyvenv'
+        '&& . pyvenv/bin/activate'
+        '&& pip install -U pip'
+        '&& pip install -Ur requirements.txt',
         '--image', 'tf-python39',
         '--wait',
     ])
@@ -40,10 +44,15 @@ def schedule(job_path: Path, daily=False):
     # delete any job with this name
     check_call(['toolforge-jobs', 'delete', job_name])
 
+    command = f'cd {job_path.parent} '
+    if (job_dir / 'pyvenv').exists():
+        command += '&& . pyvenv/bin/activate '
+    command += f'&& python3 {job_path} '
+
     args = [
         'toolforge-jobs',
         'run', job_name,
-        '--command', f'cd {job_path.parent} && python3 {job_path}',
+        '--command', command,
         '--image', 'tf-python39',
     ]
     if daily:
