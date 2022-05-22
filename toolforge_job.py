@@ -5,6 +5,12 @@ from pathlib import Path
 def prepare(job_path: Path):
     from commons import FORGETOOLS
 
+    job_dir = job_path.parent
+
+    # remove previous logs
+    (job_dir / 'bootstrap.err').unlink(missing_ok=True)
+    (job_dir / 'bootstrap.out').unlink(missing_ok=True)
+
     bootstrap = Path(FORGETOOLS + 'toolforge_job_bootstrap.sh')
     bootstrap.chmod(0o771)
 
@@ -14,7 +20,7 @@ def prepare(job_path: Path):
         'run',
         'bootstrap',  # name
         '--command',
-        f'cd {job_path.parent} && {bootstrap}',
+        f'cd {job_dir} && {bootstrap}',
         '--image', 'tf-python39',
         '--wait',
     ])
@@ -25,9 +31,16 @@ def schedule(job_path: Path, daily=False):
 
     t = localtime()
 
+    job_name = job_path.name[:-3].replace('_', '-')
+
+    # remove previous logs
+    job_dir = job_path.parent
+    (job_dir / f'{job_name}.err').unlink(missing_ok=True)
+    (job_dir / f'{job_name}.out').unlink(missing_ok=True)
+
     args = [
         'toolforge-jobs',
-        'run', job_path.name[:-3].replace('_', '-'),
+        'run', job_name,
         '--command', f'python3 {job_path}',
         '--image', 'tf-python39',
     ]
