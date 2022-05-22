@@ -46,7 +46,7 @@ def get_parser():
         choices=['update', 'u', 'install', 'i'])
 
     job = sub_parsers.add_parser(
-        'job', help='prepare or run a python toolforge-job'
+        'job', help='prepare and/or run a python toolforge-job'
     )
     job.add_argument(
         'file',
