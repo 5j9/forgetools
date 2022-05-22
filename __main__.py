@@ -56,8 +56,10 @@ def get_parser():
         )
     )
 
-    job.add_argument('--prepare', help='create venv')
-    job.add_argument('--daily', help='schedule the job for daily run')
+    job.add_argument('--prepare', help='create venv', store_true='store_true')
+    job.add_argument(
+        '--daily',
+        help='schedule the job for daily run', store_true='store_true')
     job.add_argument(
         '--once', help='schedule the job for immediate one-time run')
 
