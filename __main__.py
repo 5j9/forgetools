@@ -2,6 +2,7 @@ from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 from os import execv
 from sys import executable, argv
 from subprocess import check_output
+from pathlib import Path
 
 from commons import FORGETOOLS
 
@@ -20,14 +21,18 @@ def get_parser():
     parser.add_argument(
         '--no-git-pull', action='store_true',
         help='do not perform git pull for forgetools')
+
     sub_parsers = parser.add_subparsers(dest='sub_command')
+
     python = sub_parsers.add_parser(
         'python', help='install Python')
     python.add_argument(
         '--pyver', help='The desired Python version, e.g. 372.')
+
     sub_parsers.add_parser(
         'dotfiles',
         help='Create ~/.profile, .gitconfig and other user settings.')
+
     webservice = sub_parsers.add_parser(
         'webservice', help='webservice-related functions',
         formatter_class=ArgumentDefaultsHelpFormatter)
@@ -39,6 +44,23 @@ def get_parser():
         'install_or_update',
         help='install or update webservice.',
         choices=['update', 'u', 'install', 'i'])
+
+    job = sub_parsers.add_parser(
+        'job', help='prepare or run a python toolforge-job'
+    )
+    job.add_argument(
+        'file',
+        help=(
+            'python file path '
+            '(its directory should also contain requirements.txt)'
+        )
+    )
+
+    job.add_argument('--prepare', help='create venv')
+    job.add_argument('--daily', help='schedule the job for daily run')
+    job.add_argument(
+        '--once', help='schedule the job for immediate one-time run')
+
     return parser
 
 
@@ -61,6 +83,17 @@ def main():
         else:  # install_or_update is 'u' or 'update'.
             from update_python_webservice import main as update_webservice
             update_webservice()
+    elif sub_command == 'job':
+        from toolforge_job import prepare, schedule
+        job_path = Path(args.file)
+
+        if args.prepare:
+            prepare(job_path)
+
+        if args.daily:
+            schedule(job_path, daily=True)
+        elif args.once:
+            schedule(job_path, daily=False)
     else:
         parser.print_help()
         raise SystemExit(1)
