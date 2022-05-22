@@ -3,16 +3,11 @@ from pathlib import Path
 
 
 def prepare(job_path: Path):
-    from commons import FORGETOOLS
-
     job_dir = job_path.parent
 
     # remove previous logs
     (job_dir / 'bootstrap.err').unlink(missing_ok=True)
     (job_dir / 'bootstrap.out').unlink(missing_ok=True)
-
-    bootstrap = Path(FORGETOOLS + 'toolforge_job_bootstrap.sh')
-    bootstrap.chmod(0o771)
 
     # create venv
     check_call([
