@@ -37,6 +37,8 @@ def schedule(job_path: Path, daily=False):
     job_dir = job_path.parent
     (job_dir / f'{job_name}.err').unlink(missing_ok=True)
     (job_dir / f'{job_name}.out').unlink(missing_ok=True)
+    # delete any job with this name
+    check_call(['toolforge-jobs', 'delete', job_name])
 
     args = [
         'toolforge-jobs',

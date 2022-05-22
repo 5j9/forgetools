@@ -55,7 +55,6 @@ def get_parser():
             '(its directory should also contain requirements.txt)'
         )
     )
-
     job.add_argument('--prepare', help='create venv', action='store_true')
     job.add_argument(
         '--daily',
