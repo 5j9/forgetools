@@ -43,7 +43,7 @@ def schedule(job_path: Path, daily=False):
     args = [
         'toolforge-jobs',
         'run', job_name,
-        '--command', f'python3 {job_path}',
+        '--command', f'cd {job_path.parent} && python3 {job_path}',
         '--image', 'tf-python39',
     ]
     if daily:
