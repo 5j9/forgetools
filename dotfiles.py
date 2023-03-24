@@ -5,7 +5,7 @@ from glob import glob
 from logging import info
 from shutil import copyfile
 
-from commons import HOME, DATAFILES
+from commons import DATAFILES, HOME
 
 
 def write_profile():

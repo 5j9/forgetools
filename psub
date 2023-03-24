@@ -9,9 +9,9 @@ Treat any options after the program name as an argument for program so that it
 Note: only a few of the main jsub args are supported. See JSUB_ARG_LEN.
 """
 from subprocess import check_call
-from path import Path
 from sys import argv
 
+from path import Path
 
 JSUB_ARG_LEN = {
     '-mem': 2,

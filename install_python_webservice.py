@@ -2,11 +2,16 @@
 """Install the tool on toolforge."""
 from logging import debug
 from shutil import rmtree
-from subprocess import check_call, check_output, CalledProcessError
+from subprocess import CalledProcessError, check_call, check_output
 
 from commons import HOME, assert_webservice_control
-from update_python_webservice import pull_updates, rm_old_logs, \
-    restart_webservice, install_requirements, run_install_script
+from update_python_webservice import (
+    install_requirements,
+    pull_updates,
+    restart_webservice,
+    rm_old_logs,
+    run_install_script,
+)
 
 
 def get_repo_url() -> (str, bool):

@@ -1,8 +1,8 @@
-from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
+from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 from os import execv
-from sys import executable, argv
-from subprocess import check_output
 from pathlib import Path
+from subprocess import check_output
+from sys import argv, executable
 
 from commons import FORGETOOLS
 

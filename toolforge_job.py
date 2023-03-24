@@ -1,5 +1,5 @@
-from subprocess import check_call
 from pathlib import Path
+from subprocess import check_call
 
 
 def prepare(job_path: Path):

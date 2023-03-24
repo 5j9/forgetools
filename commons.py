@@ -1,6 +1,6 @@
-from os.path import expanduser, dirname
+from os.path import dirname, expanduser
 from platform import node
-from subprocess import check_output, CalledProcessError
+from subprocess import CalledProcessError, check_output
 
 HOME = expanduser('~') + '/'
 KUBERNETES = node() == 'interactive'

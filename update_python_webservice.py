@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """Update the source and restart `webservice --backend=kubernetes <type>`"""
 
-from commons import HOME, assert_webservice_control
 from logging import debug
-from os import chdir, remove, write, close
+from os import chdir, close, remove, write
 from pty import openpty
 from runpy import run_path
-from subprocess import check_call, Popen
+from subprocess import Popen, check_call
 
+from commons import HOME, assert_webservice_control
 
 container_type = 'python3.9'
 

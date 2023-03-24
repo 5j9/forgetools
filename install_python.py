@@ -8,17 +8,18 @@ otherwise it'll be in ~/pythons/ve{num_ver}.
 from argparse import ArgumentParser
 from distutils.version import StrictVersion
 from io import BytesIO
-from os import mkdir, chdir, getcwd
-from shutil import rmtree
+from os import chdir, getcwd, mkdir
 from re import search
+from shutil import rmtree
+
 # Use `check_call` instead of `run` to make the code py34 compatible.
 from subprocess import check_call
 from tarfile import open as tarfile_open
+
 # wget and requests are not available in containers; use curl or urlopen
 from urllib.request import urlopen
 
 from commons import HOME, KUBERNETES
-
 
 PYTHONS = HOME + 'pythons'
 
