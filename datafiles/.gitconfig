@@ -3,6 +3,7 @@ autocrlf = input
 eol = lf
 editor = vim
 excludesfile = ~/.gitignore_global
+fsmonitor = true
 
 [alias]
 a = add
@@ -49,6 +50,6 @@ ry = review --yes
 s = stash
 sl = stash list
 sp = stash pop
-ssa = stash save
+sm = stash --message
 ssh = stash show
 ssp = stash show --patch
