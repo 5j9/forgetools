@@ -12,7 +12,8 @@ def update():
     if b'files changed,' in stdout:
         print('restarting the current process')
         # about the second executable: stackoverflow.com/questions/61728339
-        execv(executable, [executable] + argv + ['--no-git-pull'])
+        argv.insert(1, '--no-git-pull')
+        execv(executable, [executable] + argv)
         raise RuntimeError('This line should never be run!')
 
 
