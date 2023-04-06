@@ -51,5 +51,6 @@ s = stash
 sl = stash list
 sm = stash --message
 sp = stash pop
+ss = status --short --branch
 ssh = stash show
 ssp = stash show --patch
