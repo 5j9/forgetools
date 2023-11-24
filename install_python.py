@@ -30,12 +30,14 @@ def download_info(ver=None) -> tuple:
         main_ver = '.'.join(str(v) for v in StrictVersion(ver).version)
         return ver, (
             'https://www.python.org/ftp/python/{main_ver}/'
-            'Python-{full_ver}.tar.xz'.format(main_ver=main_ver, full_ver=ver))
+            'Python-{full_ver}.tar.xz'.format(main_ver=main_ver, full_ver=ver)
+        )
     downloads = urlopen('https://www.python.org/downloads/').read()
     g = search(
         rb'href="(?P<url>https://www\.python\.org/ftp/python/'
         rb'(?P<dot_ver>\d+\.\d+\.\d+)/Python-(?P=dot_ver)\.tar\.xz)"',
-        downloads).group
+        downloads,
+    ).group
     return g('dot_ver').decode(), g('url').decode()
 
 
@@ -92,17 +94,20 @@ def main(ver=None):
     install_python(source_path, ver)
     setup_virtual_env(ver)
     import dotfiles
+
     dotfiles.main()
 
 
 if __name__ == '__main__':
     arg_parser = ArgumentParser(
         description='Install Python in `pythons` directory. '
-                    'By default install the latest Python version. '
-                    'Can be overridden by giving a specific Python version as '
-                    'a 3-digit number.')
+        'By default install the latest Python version. '
+        'Can be overridden by giving a specific Python version.'
+    )
     arg_parser.add_argument(
-        'pyver', nargs='?',
-        help='The desired Python version, e.g. 3.7.2 or 3.9.0b3.')
+        'pyver',
+        nargs='?',
+        help='The desired Python version, e.g. 3.7.2 or 3.9.0b3.',
+    )
     args = arg_parser.parse_args()
     main(args.pyver)

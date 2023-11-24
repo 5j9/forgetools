@@ -1,3 +1,4 @@
-[tool.isort]
-profile = "black"
-combine_as_imports = true
+[tool.ruff]
+line-length = 79
+format.quote-style = 'single'
+isort.combine-as-imports = true

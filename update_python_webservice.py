@@ -24,7 +24,8 @@ def install_requirements(shell_script_prepend: bytes = None):
         b'. ~/www/python/venv/bin/activate '
         b' && pip install --upgrade pip setuptools'
         b' && pip install -Ur ~/www/python/src/requirements.txt'
-        b' && exit\n')
+        b' && exit\n'
+    )
     if shell_script_prepend:
         shell_script = shell_script_prepend + b' && ' + shell_script
     # Kubernetes terminates immediately on a non-tty process. Use pty instead.
@@ -32,7 +33,9 @@ def install_requirements(shell_script_prepend: bytes = None):
     try:
         p = Popen(
             ['webservice', '--backend=kubernetes', container_type, 'shell'],
-            stdin=slave, bufsize=1)
+            stdin=slave,
+            bufsize=1,
+        )
         write(master, shell_script)
         p.wait()
     finally:
@@ -56,8 +59,9 @@ def restart_webservice():
         remove(HOME + 'service.manifest')
     except FileNotFoundError:
         pass
-    check_call([
-        'webservice', '--backend=kubernetes', container_type, 'restart'])
+    check_call(
+        ['webservice', '--backend=kubernetes', container_type, 'restart']
+    )
 
 
 def run_install_script():

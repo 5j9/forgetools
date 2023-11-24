@@ -10,19 +10,22 @@ def prepare(job_path: Path):
     (job_dir / 'bootstrap.out').unlink(missing_ok=True)
 
     # create venv
-    check_call([
-        'toolforge-jobs',
-        'run',
-        'bootstrap',  # name
-        '--command',
-        f'cd {job_dir} '
-        '&& python3 -m venv pyvenv'
-        '&& . pyvenv/bin/activate'
-        '&& pip install -U pip'
-        '&& pip install -Ur requirements.txt',
-        '--image', 'tf-python39',
-        '--wait',
-    ])
+    check_call(
+        [
+            'toolforge-jobs',
+            'run',
+            'bootstrap',  # name
+            '--command',
+            f'cd {job_dir} '
+            '&& python3 -m venv pyvenv'
+            '&& . pyvenv/bin/activate'
+            '&& pip install -U pip'
+            '&& pip install -Ur requirements.txt',
+            '--image',
+            'tf-python39',
+            '--wait',
+        ]
+    )
 
 
 def schedule(job_path: Path, daily=False):
@@ -46,9 +49,12 @@ def schedule(job_path: Path, daily=False):
 
     args = [
         'toolforge-jobs',
-        'run', job_name,
-        '--command', command,
-        '--image', 'tf-python39',
+        'run',
+        job_name,
+        '--command',
+        command,
+        '--image',
+        'tf-python39',
     ]
     if daily:
         args += ['--schedule', f'{t.tm_min + 1} {t.tm_hour} * * *']
