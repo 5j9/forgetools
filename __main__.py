@@ -29,7 +29,7 @@ def get_parser():
 
     python = sub_parsers.add_parser('python', help='install Python')
     python.add_argument(
-        '--pyver', help='The desired Python version, e.g. 372.'
+        '--pyver', help='The desired Python version, e.g. `3.12.0`.'
     )
 
     sub_parsers.add_parser(
