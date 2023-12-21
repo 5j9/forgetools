@@ -1,15 +1,36 @@
 #!/usr/bin/env python3
 """Update the source and restart `webservice --backend=kubernetes <type>`"""
-
 from logging import debug
 from os import chdir, close, remove, write
 from pty import openpty
+from re import findall
 from runpy import run_path
 from subprocess import Popen, check_call
 
-from commons import HOME, assert_webservice_control
+from commons import (
+    HOME,
+    assert_webservice_control,
+    cached_check_output,
+    max_version,
+)
 
-container_type = 'python3.9'
+
+def newest_container_type(lang='python') -> str:
+    """Use `webservice -h` to return newest container type for the given lang.
+
+    The output of `webservice -h` contains a list like this:
+    ```
+    Supported webservice types:
+      Kubernetes backend:
+        [...]
+        * python3.11
+        * python3.9
+        [...]
+    ```
+    """
+    webservice_help = cached_check_output('webservice', '-h')
+    type_version_pairs = findall(rf'\* \b({lang}([\d.]+))\b', webservice_help)
+    return max_version(type_version_pairs)
 
 
 def pull_updates():
@@ -32,7 +53,12 @@ def install_requirements(shell_script_prepend: bytes = None):
     master, slave = openpty()
     try:
         p = Popen(
-            ['webservice', '--backend=kubernetes', container_type, 'shell'],
+            [
+                'webservice',
+                '--backend=kubernetes',
+                newest_container_type(),
+                'shell',
+            ],
             stdin=slave,
             bufsize=1,
         )
@@ -60,7 +86,12 @@ def restart_webservice():
     except FileNotFoundError:
         pass
     check_call(
-        ['webservice', '--backend=kubernetes', container_type, 'restart']
+        [
+            'webservice',
+            '--backend=kubernetes',
+            newest_container_type(),
+            'restart',
+        ]
     )
 
 

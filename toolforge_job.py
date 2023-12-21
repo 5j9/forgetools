@@ -1,5 +1,27 @@
 from pathlib import Path
+from re import findall
 from subprocess import check_call
+
+from commons import cached_check_output, max_version
+
+
+def newest_image(lang='python') -> str:
+    """Use `toolforge-jobs images` to return newest image for the given lang.
+
+    The output of `toolforge-jobs images` is a table:
+
+    ```
+    Short name    Container image URL
+    ------------  ----------------------------------------------------------------------
+    [...]
+    python3.11    docker-registry.tools.wmflabs.org/toolforge-python311-sssd-base:latest
+    python3.9     docker-registry.tools.wmflabs.org/toolforge-python39-sssd-base:latest
+    [...]
+    ```
+    """
+    images = cached_check_output('toolforge-jobs', 'images')
+    iamge_version_pairs = findall(rf'\b({lang}([\d.]+))\b', images)
+    return max_version(iamge_version_pairs)
 
 
 def prepare(job_path: Path):
@@ -22,7 +44,7 @@ def prepare(job_path: Path):
             '&& pip install -U pip'
             '&& pip install -Ur requirements.txt',
             '--image',
-            'tf-python39',
+            newest_image(),
             '--wait',
         ]
     )
@@ -54,7 +76,7 @@ def schedule(job_path: Path, daily=False):
         '--command',
         command,
         '--image',
-        'tf-python39',
+        newest_image(),
     ]
     if daily:
         args += ['--schedule', f'{t.tm_min + 1} {t.tm_hour} * * *']
