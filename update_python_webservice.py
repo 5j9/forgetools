@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Update the source and restart `webservice --backend=kubernetes <type>`"""
-from logging import debug
-from os import chdir, close, remove, write
+from logging import debug, info, warning
+from os import chdir, close, remove, rename, write
 from pty import openpty
 from re import findall
 from runpy import run_path
@@ -82,9 +82,16 @@ def rm_old_logs():
 
 def restart_webservice():
     try:  # To prevent corrupt manifest file. See T164245.
-        remove(HOME + 'service.manifest')
+        rename(HOME + 'service.manifest', HOME + 'service.manifest.backup')
     except FileNotFoundError:
-        pass
+        info('service.manifest not found')
+    except FileExistsError:
+        remove(HOME + 'service.manifest.backup')
+        rename(HOME + 'service.manifest', HOME + 'service.manifest.backup')
+        warning('replaced service.manifest.backup with service.manifest')
+    else:
+        warning('service.manifest was moved to service.manifest.backup')
+
     check_call(
         [
             'webservice',
