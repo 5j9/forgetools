@@ -14,7 +14,7 @@ def update():
         # about the second executable: stackoverflow.com/questions/61728339
         argv.insert(1, '--no-git-pull')
         execv(executable, [executable] + argv)
-        raise RuntimeError('This line should never be run!')
+        # raise RuntimeError('This line should never be run!')
 
 
 def get_parser():
