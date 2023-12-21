@@ -80,7 +80,7 @@ def rm_old_logs():
         pass
 
 
-def restart_webservice():
+def rm_manifest():
     try:  # To prevent corrupt manifest file. See T164245.
         rename(HOME + 'service.manifest', HOME + 'service.manifest.backup')
     except FileNotFoundError:
@@ -92,6 +92,9 @@ def restart_webservice():
     else:
         warning('service.manifest was moved to service.manifest.backup')
 
+
+def restart_webservice():
+    rm_manifest()
     check_call(
         [
             'webservice',
