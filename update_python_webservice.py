@@ -5,7 +5,7 @@ from os import chdir, close, remove, rename, write
 from pty import openpty
 from re import findall
 from runpy import run_path
-from subprocess import Popen, check_call
+from subprocess import Popen, check_call, check_output
 
 from commons import (
     HOME,
@@ -112,8 +112,23 @@ def run_install_script():
         debug('no install.py')
 
 
+def assert_webservice_type():
+    o = check_output(['webservice', 'status'])
+    webservice_type = (
+        o.partition(b'Your webservice of type ')[2]
+        .partition(b' is running on backend kubernetes')[0]
+        .decode()
+    )
+    if webservice_type != newest_container_type():
+        raise SystemExit(
+            f'{webservice_type=!r} != {newest_container_type()=!r}, '
+            f'try `python3 forgetools webservice install`'
+        )
+
+
 def main():
     assert_webservice_control(__file__)
+    assert_webservice_type()
     rm_old_logs()
     pull_updates()
     install_requirements()
