@@ -121,7 +121,8 @@ def assert_webservice_type():
     )
     if webservice_type != newest_container_type():
         raise SystemExit(
-            f'{webservice_type=!r} != {newest_container_type()=!r}, '
+            f'current webservice is of type {webservice_type}, '
+            f'newest container type is {newest_container_type()}, '
             f'try `python3 forgetools webservice install`'
         )
 
