@@ -35,7 +35,7 @@ d = diff
 dm = diff main
 dt = difftool
 lf = ls-files -v
-lg = log --graph --oneline --all
+lg = log --graph --abbrev-commit --decorate --format='%C(yellow)%h%C(reset) %an %C(green)%ar%C(reset) %s'
 p = pull
 pf = push --force
 pr = pull --rebase
@@ -67,3 +67,6 @@ uisw = update-index --skip-worktree
 
 [push]
 followtags = true
+
+[log]
+date = relative
