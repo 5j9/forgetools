@@ -64,3 +64,6 @@ ssp = stash show --patch
 ui = update-index
 uinsw = update-index --no-skip-worktree
 uisw = update-index --skip-worktree
+
+[push]
+followtags = true
