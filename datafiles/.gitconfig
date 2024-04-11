@@ -70,3 +70,4 @@
 [push]
 	followtags = true
 	default = current
+	autoSetupRemote = true
