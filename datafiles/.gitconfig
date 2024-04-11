@@ -28,7 +28,7 @@
 	dm = diff main
 	dt = difftool
 	lf = ls-files -v
-	lg = log --graph --abbrev-commit --decorate --format='%C(yellow)%h%C(reset) %an %C(green)%ar%C(reset) %s'
+	lg = log --graph --abbrev-commit --decorate --format='%C(auto)%h%C(reset) %an %C(cyan)%ar%C(reset) %s %C(auto)%d%C(reset)' --all
 	p = pull
 	pf = push --force
 	pr = pull --rebase
