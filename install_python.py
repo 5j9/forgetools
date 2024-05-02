@@ -10,8 +10,6 @@ from io import BytesIO
 from os import chdir, getcwd, mkdir
 from re import search
 from shutil import rmtree
-
-# Use `check_call` instead of `run` to make the code py34 compatible.
 from subprocess import check_call
 from tarfile import open as tarfile_open
 

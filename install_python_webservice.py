@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Install the tool on toolforge."""
+
 from logging import debug
 from shutil import rmtree
-from subprocess import CalledProcessError, check_call, check_output
+from subprocess import CalledProcessError
 
-from commons import HOME, assert_webservice_control
+from commons import HOME, assert_webservice_control, verbose_run
 from update_python_webservice import (
     install_requirements,
     pull_updates,
@@ -16,16 +17,14 @@ from update_python_webservice import (
 
 def get_repo_url() -> (str, bool):
     try:
-        repo_url = check_output(
-            [
-                'git',
-                '-C',
-                HOME + 'www/python/src',
-                'config',
-                '--get',
-                'remote.origin.url',
-            ]
-        )
+        repo_url = verbose_run(
+            'git',
+            '-C',
+            HOME + 'www/python/src',
+            'config',
+            '--get',
+            'remote.origin.url',
+        ).stdout
     except CalledProcessError:
         return input('Enter the URL of the git repository:'), False
     else:
@@ -39,10 +38,10 @@ def clone_repo():
         return
     src = HOME + 'www/python/src'
     try:
-        check_call(['git', 'clone', '--depth', '1', repo_url, src])
+        verbose_run('git', 'clone', '--depth', '1', repo_url, src)
     except CalledProcessError:  # SRC is not empty and git cannot clone
         rmtree(src)
-        check_call(['git', 'clone', '--depth', '1', repo_url, src])
+        verbose_run('git', 'clone', '--depth', '1', repo_url, src)
 
 
 def recreate_venv_and_install_requirements():

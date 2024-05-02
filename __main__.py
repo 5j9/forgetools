@@ -1,15 +1,13 @@
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 from os import execv
 from pathlib import Path
-from subprocess import check_output
 from sys import argv, executable
 
-from commons import FORGETOOLS
+from commons import FORGETOOLS, verbose_run
 
 
 def update():
-    out = check_output(('git', '-C', FORGETOOLS, 'pull'))
-    print(out.decode())
+    out = verbose_run('git', '-C', FORGETOOLS, 'pull').stdout
     if b'files changed,' in out:
         print('restarting the current process')
         # about the second executable: stackoverflow.com/questions/61728339
