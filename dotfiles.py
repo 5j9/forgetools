@@ -40,13 +40,13 @@ def write_bashrc():
 
 
 def write_gitconfig():
-    from configparser import ConfigParser
+    from configparser import RawConfigParser
 
-    updates = ConfigParser()
+    updates = RawConfigParser()
     with open(DATAFILES + '.gitconfig', encoding='utf8') as f:
         updates.read_file(f)
 
-    home_config = ConfigParser()
+    home_config = RawConfigParser()
     with open(HOME + '.gitconfig', 'a+', encoding='utf8') as f:
         f.seek(0)
         home_config.read_file(f)
