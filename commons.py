@@ -1,9 +1,10 @@
 from functools import lru_cache
+from logging import debug
 from operator import itemgetter
 from os.path import dirname, expanduser
 from platform import node
 from subprocess import CalledProcessError, CompletedProcess, run
-from sys import stderr, stdout
+from sys import stderr
 
 HOME = expanduser('~') + '/'
 KUBERNETES = node() == 'interactive'
@@ -12,14 +13,14 @@ DATAFILES = FORGETOOLS + 'datafiles/'
 
 
 def verbose_run(*args: str) -> CompletedProcess:
-    """Print args, capture stdout and stderr, then print them back.
+    """Print args, capture stdout and stderr, and write stderr to sys.stderr.
 
-    Note: This function does not print stdout and stderr in real-time. It
-    first waits for the process to finish.
+    Note: This function does not print stderr in real-time. It first waits for
+    the process to finish.
     """
     print(args)
     cp = run(args, capture_output=True, check=True)
-    stdout.write(cp.stdout.decode())
+    debug(cp.stdout)
     stderr.write(cp.stderr.decode())
     return cp
 
