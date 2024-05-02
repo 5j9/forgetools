@@ -6,7 +6,7 @@ from os import chdir, close, remove, rename, write
 from pty import openpty
 from re import findall
 from runpy import run_path
-from subprocess import CompletedProcess, Popen
+from subprocess import CalledProcessError, Popen
 
 from commons import (
     HOME,
@@ -35,24 +35,24 @@ def newest_container_type(lang='python') -> str:
     return max_version(type_version_pairs)
 
 
-def handle_master_renamed_to_main(cp: CompletedProcess) -> CompletedProcess:
-    if b'ref refs/heads/master' not in cp.stderr:
+def handle_master_renamed_to_main(e: CalledProcessError) -> None:
+    if b'ref refs/heads/master' not in e.stderr:
         raise
     # Assuming the error is caused by master being renamed to main.
     verbose_run('git', 'branch', '-m', 'master', 'main')
     verbose_run('git', 'fetch', 'origin')
     verbose_run('git', 'branch', '-u', 'origin/main', 'main')
     verbose_run('git', 'remote', 'set-head', 'origin', '-a')
-    cp = verbose_run(*cp.args)
-    return cp
 
 
 def pull_updates() -> None:
     chdir(HOME + 'www/python/src')
     verbose_run('git', 'reset', '--hard')
-    cp = verbose_run('git', 'pull')
-    if cp.returncode:
-        handle_master_renamed_to_main(cp)
+    try:
+        verbose_run('git', 'pull')
+    except CalledProcessError as e:
+        handle_master_renamed_to_main(e)
+        verbose_run('git', 'pull')
 
 
 def install_requirements(shell_script_prepend: bytes = None):
