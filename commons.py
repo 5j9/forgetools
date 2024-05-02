@@ -12,6 +12,11 @@ DATAFILES = FORGETOOLS + 'datafiles/'
 
 
 def verbose_run(*args: str) -> CompletedProcess:
+    """Print args, capture stdout and stderr, then print them back.
+
+    Note: This function does not print stdout and stderr in real-time. It
+    first waits for the process to finish.
+    """
     print(args)
     cp = run(args, capture_output=True, check=True)
     stdout.write(cp.stdout.decode())

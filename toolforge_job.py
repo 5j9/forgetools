@@ -1,8 +1,7 @@
 from pathlib import Path
 from re import findall
-from subprocess import check_call
 
-from commons import cached_check_output, max_version
+from commons import cached_check_output, max_version, verbose_run
 
 
 def newest_image(lang='python') -> str:
@@ -32,21 +31,19 @@ def prepare(job_path: Path):
     (job_dir / 'bootstrap.out').unlink(missing_ok=True)
 
     # create venv
-    check_call(
-        [
-            'toolforge-jobs',
-            'run',
-            'bootstrap',  # name
-            '--command',
-            f'cd {job_dir} '
-            '&& python3 -m venv pyvenv'
-            '&& . pyvenv/bin/activate'
-            '&& pip install -U pip'
-            '&& pip install -Ur requirements.txt',
-            '--image',
-            newest_image(),
-            '--wait',
-        ]
+    verbose_run(
+        'toolforge-jobs',
+        'run',
+        'bootstrap',  # name
+        '--command',
+        f'cd {job_dir} '
+        '&& python3 -m venv pyvenv'
+        '&& . pyvenv/bin/activate'
+        '&& pip install -U pip'
+        '&& pip install -Ur requirements.txt',
+        '--image',
+        newest_image(),
+        '--wait',
     )
 
 
@@ -62,7 +59,7 @@ def schedule(job_path: Path, daily=False):
     (job_dir / f'{job_name}.err').unlink(missing_ok=True)
     (job_dir / f'{job_name}.out').unlink(missing_ok=True)
     # delete any job with this name
-    check_call(['toolforge-jobs', 'delete', job_name])
+    verbose_run('toolforge-jobs', 'delete', job_name)
 
     command = f'cd {job_path.parent} '
     if (job_dir / 'pyvenv').exists():
@@ -81,4 +78,4 @@ def schedule(job_path: Path, daily=False):
     if daily:
         args += ['--schedule', f'{t.tm_min + 1} {t.tm_hour} * * *']
 
-    check_call(args)
+    verbose_run(*args)
