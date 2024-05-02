@@ -1,11 +1,20 @@
 #!/usr/bin/env python3
 """Update the source and restart `webservice --backend=kubernetes <type>`"""
+
+import sys
 from logging import debug, info, warning
 from os import chdir, close, remove, rename, write
 from pty import openpty
 from re import findall
 from runpy import run_path
-from subprocess import Popen, check_call, check_output
+from subprocess import (
+    PIPE,
+    CalledProcessError,
+    Popen,
+    check_call,
+    check_output,
+    run,
+)
 
 from commons import (
     HOME,
@@ -35,8 +44,20 @@ def newest_container_type(lang='python') -> str:
 
 def pull_updates():
     chdir(HOME + 'www/python/src')
-    check_call(('git', 'reset', '--hard'))
-    check_call(('git', 'pull'))
+    run(('git', 'reset', '--hard'), check=True)
+    try:
+        run(('git', 'pull'), check=True, stderr=PIPE)
+    except CalledProcessError as e:
+        if b"fatal: couldn't find remote ref refs/heads/master" in e.stderr:
+            # renamed master to main?
+            run(('git', 'branch', '-m', 'master', 'main'), check=True)
+            run(('git', 'fetch', 'origin'), check=True)
+            run(('git', 'branch', '-u', 'origin/main', 'main'), check=True)
+            run(('git', 'remote', 'set-head', 'origin', '-a'), check=True)
+            run(('git', 'pull'), check=True)
+            return
+        sys.stderr.write(e.stderr.decode())
+        raise
 
 
 def install_requirements(shell_script_prepend: bytes = None):
