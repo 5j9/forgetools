@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Update the source and restart `webservice --backend=kubernetes <type>`"""
 
-import sys
 from logging import debug, info, warning
 from os import chdir, close, remove, rename, write
 from pty import openpty
@@ -9,13 +8,13 @@ from re import findall
 from runpy import run_path
 from subprocess import (
     PIPE,
-    CalledProcessError,
     Popen,
     check_call,
     check_output,
     run,
 )
 
+from __main__ import handle_master_renamed_to_main
 from commons import (
     HOME,
     assert_webservice_control,
@@ -42,22 +41,12 @@ def newest_container_type(lang='python') -> str:
     return max_version(type_version_pairs)
 
 
-def pull_updates():
+def pull_updates() -> None:
     chdir(HOME + 'www/python/src')
     run(('git', 'reset', '--hard'), check=True)
-    try:
-        run(('git', 'pull'), check=True, stderr=PIPE)
-    except CalledProcessError as e:
-        if b"fatal: couldn't find remote ref refs/heads/master" in e.stderr:
-            # renamed master to main?
-            run(('git', 'branch', '-m', 'master', 'main'), check=True)
-            run(('git', 'fetch', 'origin'), check=True)
-            run(('git', 'branch', '-u', 'origin/main', 'main'), check=True)
-            run(('git', 'remote', 'set-head', 'origin', '-a'), check=True)
-            run(('git', 'pull'), check=True)
-            return
-        sys.stderr.write(e.stderr.decode())
-        raise
+    cp = run(('git', 'pull'), check=True, stderr=PIPE)
+    if cp.returncode:
+        handle_master_renamed_to_main(cp)
 
 
 def install_requirements(shell_script_prepend: bytes = None):
