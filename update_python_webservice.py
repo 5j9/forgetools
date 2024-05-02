@@ -3,6 +3,7 @@
 
 from logging import debug, info, warning
 from os import chdir, close, remove, rename, write
+from os.path import exists
 from pty import openpty
 from re import findall
 from runpy import run_path
@@ -120,9 +121,12 @@ def restart_webservice():
 
 
 def run_install_script():
+    install = HOME + 'www/python/src/install.py'
     try:
-        run_path(HOME + 'www/python/src/install.py', run_name='__main__')
+        run_path(install, run_name='__main__')
     except FileNotFoundError:
+        if exists(install):  # the error is from inside install.py
+            raise
         debug('no install.py')
 
 
