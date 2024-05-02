@@ -1,30 +1,16 @@
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 from os import execv
 from pathlib import Path
-from subprocess import CompletedProcess, run
-from sys import argv, executable, stderr, stdout
+from subprocess import check_output
+from sys import argv, executable
 
 from commons import FORGETOOLS
 
 
-def handle_master_renamed_to_main(cp: CompletedProcess) -> CompletedProcess:
-    if b'ref refs/heads/master' not in cp.stderr:
-        stderr.write(cp.stderr)
-        stdout.write(cp.stdout)
-        raise
-    # Assuming the error is caused by master being renamed to main.
-    run(('git', 'branch', '-m', 'master', 'main'), check=True)
-    run(('git', 'fetch', 'origin'), check=True)
-    run(('git', 'branch', '-u', 'origin/main', 'main'), check=True)
-    run(('git', 'remote', 'set-head', 'origin', '-a'), check=True)
-    return run(cp.args, capture_output=True, check=True)
-
-
 def update():
-    cp = run(('git', '-C', FORGETOOLS, 'pull'), capture_output=True)
-    if cp.returncode:
-        cp = handle_master_renamed_to_main(cp)
-    if b'files changed,' in cp.stdout:
+    out = check_output(('git', '-C', FORGETOOLS, 'pull'))
+    print(out.decode())
+    if b'files changed,' in out:
         print('restarting the current process')
         # about the second executable: stackoverflow.com/questions/61728339
         argv.insert(1, '--no-git-pull')

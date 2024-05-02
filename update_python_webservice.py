@@ -6,20 +6,14 @@ from os import chdir, close, remove, rename, write
 from pty import openpty
 from re import findall
 from runpy import run_path
-from subprocess import (
-    PIPE,
-    Popen,
-    check_call,
-    check_output,
-    run,
-)
+from subprocess import CompletedProcess, Popen
 
-from __main__ import handle_master_renamed_to_main
 from commons import (
     HOME,
     assert_webservice_control,
     cached_check_output,
     max_version,
+    verbose_run,
 )
 
 
@@ -41,10 +35,22 @@ def newest_container_type(lang='python') -> str:
     return max_version(type_version_pairs)
 
 
+def handle_master_renamed_to_main(cp: CompletedProcess) -> CompletedProcess:
+    if b'ref refs/heads/master' not in cp.stderr:
+        raise
+    # Assuming the error is caused by master being renamed to main.
+    verbose_run('git', 'branch', '-m', 'master', 'main')
+    verbose_run('git', 'fetch', 'origin')
+    verbose_run('git', 'branch', '-u', 'origin/main', 'main')
+    verbose_run('git', 'remote', 'set-head', 'origin', '-a')
+    cp = verbose_run(*cp.args)
+    return cp
+
+
 def pull_updates() -> None:
     chdir(HOME + 'www/python/src')
-    run(('git', 'reset', '--hard'), check=True)
-    cp = run(('git', 'pull'), check=True, stderr=PIPE)
+    verbose_run('git', 'reset', '--hard')
+    cp = verbose_run('git', 'pull')
     if cp.returncode:
         handle_master_renamed_to_main(cp)
 
@@ -105,13 +111,11 @@ def rm_manifest():
 
 def restart_webservice():
     rm_manifest()
-    check_call(
-        [
-            'webservice',
-            '--backend=kubernetes',
-            newest_container_type(),
-            'restart',
-        ]
+    verbose_run(
+        'webservice',
+        '--backend=kubernetes',
+        newest_container_type(),
+        'restart',
     )
 
 
@@ -123,7 +127,7 @@ def run_install_script():
 
 
 def assert_webservice_type():
-    o = check_output(['webservice', 'status'])
+    o = verbose_run('webservice', 'status').stdout
     webservice_type = (
         o.partition(b'Your webservice of type ')[2]
         .partition(b' is running on backend kubernetes')[0]
