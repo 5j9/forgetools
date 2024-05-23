@@ -19,9 +19,10 @@ def verbose_run(*args: str) -> CompletedProcess:
     the process to finish.
     """
     print(args)
-    cp = run(args, capture_output=True, check=True)
+    cp = run(args, capture_output=True)
     debug(cp.stdout)
     stderr.write(cp.stderr.decode())
+    cp.check_returncode()
     return cp
 
 
