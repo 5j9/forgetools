@@ -5,6 +5,7 @@ If run from a kubernetes pod, install the venv in ~/www/python/venv,
 otherwise it'll be in ~/pythons/ve{num_ver}.
 """
 
+import gzip
 from argparse import ArgumentParser
 from io import BytesIO
 from os import chdir, getcwd, mkdir
@@ -28,7 +29,11 @@ def download_info(version=None) -> tuple:
             f'https://www.python.org/ftp/python/{version}/'
             f'Python-{version}.tar.xz'
         )
-    downloads = urlopen('https://www.python.org/downloads/').read()
+    response = urlopen('https://www.python.org/downloads/')
+    downloads = response.read()
+    if response.info().get('Content-Encoding') == 'gzip':
+        downloads = gzip.decompress(downloads)
+
     g = search(
         rb'href="(?P<url>https://www\.python\.org/ftp/python/'
         rb'(?P<version>\d+\.\d+\.\d+)/Python-(?P=version)\.tar\.xz)"',
