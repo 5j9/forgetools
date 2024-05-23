@@ -7,7 +7,7 @@ from commons import FORGETOOLS, verbose_run
 
 
 def update():
-    out = verbose_run('git', '-C', FORGETOOLS, 'reset', '--hard').stdout
+    verbose_run('git', '-C', FORGETOOLS, 'reset', '--hard')
     out = verbose_run('git', '-C', FORGETOOLS, 'pull').stdout
     if b'files changed,' in out:
         print('restarting the current process')
