@@ -29,6 +29,7 @@
 	dt = difftool
 	lf = ls-files -v
 	lg = log --graph --abbrev-commit --decorate --format='%C(auto)%h%C(reset) %an %C(cyan)%ar%C(reset) %s %C(auto)%d%C(reset)' --all
+	nsw = update-index --no-skip-worktree
 	p = pull
 	pf = push --force
 	pr = pull --rebase
@@ -54,9 +55,8 @@
 	ss = status --short --branch
 	ssh = stash show
 	ssp = stash show --patch
+	sw = update-index --skip-worktree
 	ui = update-index
-	uinsw = update-index --no-skip-worktree
-	uisw = update-index --skip-worktree
 [core]
 	autocrlf = input
 	editor = vim
