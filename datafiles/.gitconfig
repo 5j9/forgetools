@@ -72,3 +72,5 @@
 	followtags = true
 	default = current
 	autoSetupRemote = true
+[grep]
+	lineNumber = true
