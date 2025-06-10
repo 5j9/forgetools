@@ -22,7 +22,7 @@ from commons import HOME, KUBERNETES
 PYTHONS = HOME + 'pythons'
 
 
-def download_info(version=None) -> tuple:
+def download_info(version: str | None = None) -> tuple[str, str]:
     """Return the url of the latest version if `ver` is None."""
     if version:
         return version, (
@@ -38,11 +38,11 @@ def download_info(version=None) -> tuple:
         rb'href="(?P<url>https://www\.python\.org/ftp/python/'
         rb'(?P<version>\d+\.\d+\.\d+)/Python-(?P=version)\.tar\.xz)"',
         downloads,
-    ).group
+    ).group  # type: ignore
     return g('version').decode(), g('url').decode()
 
 
-def download_python(version: str) -> tuple:
+def download_python(version: str | None) -> tuple[str, str]:
     """Download installer, extract it, return the installer dir."""
     version, url = download_info(version)
     source_path = PYTHONS + '/Python-' + version
@@ -86,7 +86,7 @@ def setup_virtual_env(version, requirements=None):
         check_call(script, shell=True)
 
 
-def main(version=None):
+def main(version: str | None = None):
     try:
         mkdir(PYTHONS)
     except FileExistsError:
