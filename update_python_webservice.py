@@ -5,7 +5,7 @@ from logging import debug, info, warning
 from os import chdir, close, remove, rename, write
 from os.path import exists
 from pathlib import Path
-from pty import openpty
+from pty import openpty  # type: ignore ; pty is not available on windows
 from re import findall
 from runpy import run_path
 from subprocess import CalledProcessError, Popen
