@@ -4,6 +4,7 @@
 from logging import debug, info, warning
 from os import chdir, close, remove, rename, write
 from os.path import exists
+from pathlib import Path
 from pty import openpty
 from re import findall
 from runpy import run_path
@@ -112,9 +113,14 @@ def rm_manifest():
 
 def restart_webservice():
     rm_manifest()
+    try:
+        args = (Path.home() / '.webservice-args').read_bytes().decode().split()
+    except FileNotFoundError:
+        args = ()
     verbose_run(
         'webservice',
         '--backend=kubernetes',
+        *args,
         newest_container_type(),
         'restart',
     )
