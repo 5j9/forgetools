@@ -15,7 +15,7 @@ from update_python_webservice import (
 )
 
 
-def get_repo_url() -> (str, bool):
+def get_repo_url() -> tuple[str, bool]:
     try:
         repo_url = verbose_run(
             'git',
