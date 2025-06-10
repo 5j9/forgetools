@@ -3,6 +3,7 @@
 
 from glob import glob
 from logging import info
+from pathlib import Path
 from shutil import copyfile
 
 from commons import DATAFILES, HOME
@@ -10,8 +11,7 @@ from commons import DATAFILES, HOME
 
 def write_profile():
     if glob(HOME + 'pythons/ve*'):
-        with open(DATAFILES + '.profile.venv', 'rb') as f:
-            activate_venv = f.read()
+        activate_venv = Path(DATAFILES + '.profile.venv').read_bytes()
     else:
         info(
             'No ve* was found in ~/pythons. '
@@ -19,24 +19,25 @@ def write_profile():
         )
         activate_venv = b''
 
-    with open(DATAFILES + '.profile.ezprompt', 'rb') as f:
-        ezprompt = f.read()
+    ezprompt = Path(DATAFILES + '.profile.ezprompt').read_bytes()
 
-    with open('/etc/skel/.profile', 'rb') as profile_skel:
-        with open(HOME + '.profile', 'wb') as profile:
-            profile.write(profile_skel.read() + ezprompt + activate_venv)
+    Path(HOME + '.profile').write_bytes(
+        Path('/etc/skel/.profile', 'rb').read_bytes()
+        + ezprompt
+        + activate_venv
+    )
 
 
 def write_bashrc():
-    with open('/etc/skel/.bashrc', 'rb') as bashrc_skel:  # T131561
-        with open(HOME + '.bashrc', 'wb') as bashrc:
-            bashrc.write(
-                bashrc_skel.read().replace(
-                    b'HISTCONTROL=ignoredups:ignorespace',
-                    b'HISTCONTROL=ignoreboth:erasedups',
-                    1,
-                )
-            )
+    Path(HOME + '.bashrc').write_bytes(
+        Path('/etc/skel/.bashrc')  # T131561
+        .read_bytes()
+        .replace(
+            b'HISTCONTROL=ignoredups:ignorespace',
+            b'HISTCONTROL=ignoreboth:erasedups',
+            1,
+        )
+    )
 
 
 def write_gitconfig():
