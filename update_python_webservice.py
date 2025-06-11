@@ -2,13 +2,13 @@
 """Update the source and restart `webservice --backend=kubernetes <type>`"""
 
 from logging import debug, info, warning
-from os import chdir, close, remove, rename, write
+from os import chdir, close, environ, remove, rename, write
 from os.path import exists
 from pathlib import Path
 from pty import openpty  # type: ignore ; pty is not available on windows
 from re import findall
 from runpy import run_path
-from subprocess import CalledProcessError, Popen
+from subprocess import CalledProcessError, Popen, run
 
 from commons import (
     HOME,
@@ -57,16 +57,19 @@ def pull_updates() -> None:
         verbose_run('git', 'pull')
 
 
-def install_requirements(shell_script_prepend: bytes = None):
+def prepare_uv():
+    environ['VIRTUAL_ENV'] = HOME + 'www/python/venv'
+    try:
+        verbose_run('uv', 'self', 'update')
+    except CalledProcessError:
+        cp = verbose_run('curl', '-LsSf', 'https://astral.sh/uv/install.sh')
+        run(cp.stdout, shell=True)
+
+
+def sync_up_venv():
     # ~ is / in the kubectl's shell
-    shell_script = (
-        b'. ~/www/python/venv/bin/activate '
-        b' && pip install --upgrade pip setuptools'
-        b' && pip install -Ur ~/www/python/src/requirements.txt'
-        b' && exit\n'
-    )
-    if shell_script_prepend:
-        shell_script = shell_script_prepend + b' && ' + shell_script
+    prepare_uv()
+    shell_script = b'uv sync -U  && exit\n'
     # Kubernetes terminates immediately on a non-tty process. Use pty instead.
     master, slave = openpty()
     try:
@@ -156,7 +159,7 @@ def main():
     assert_webservice_type()
     rm_old_logs()
     pull_updates()
-    install_requirements()
+    sync_up_venv()
     run_install_script()
     restart_webservice()
 
