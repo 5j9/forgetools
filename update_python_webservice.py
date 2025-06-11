@@ -61,7 +61,7 @@ def prepare_uv():
     environ['VIRTUAL_ENV'] = HOME + 'www/python/venv'
     try:
         verbose_run('uv', 'self', 'update')
-    except CalledProcessError:
+    except FileNotFoundError:
         cp = verbose_run('curl', '-LsSf', 'https://astral.sh/uv/install.sh')
         run(cp.stdout, shell=True)
 
