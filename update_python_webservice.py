@@ -120,13 +120,17 @@ def restart_webservice():
         args = (Path.home() / '.webservice-args').read_bytes().decode().split()
     except FileNotFoundError:
         args = ()
-    verbose_run(
-        'webservice',
-        '--backend=kubernetes',
-        *args,
-        newest_container_type(),
-        'restart',
-    )
+    try:
+        verbose_run(
+            'webservice',
+            '--backend=kubernetes',
+            *args,
+            newest_container_type(),
+            'restart',
+        )
+    except CalledProcessError as e:
+        if b'Your webservice is taking quite while to restart.' in e.output:
+            pass
 
 
 def run_install_script():
