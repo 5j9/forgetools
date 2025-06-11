@@ -69,7 +69,7 @@ def prepare_uv():
 def sync_up_venv():
     # ~ is / in the kubectl's shell
     prepare_uv()
-    shell_script = b'uv sync -U  && exit\n'
+    shell_script = b'uv sync -U --directory ~/www/python/src && exit\n'
     # Kubernetes terminates immediately on a non-tty process. Use pty instead.
     master, slave = openpty()
     try:
