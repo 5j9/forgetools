@@ -4,7 +4,6 @@
 from logging import debug, info, warning
 from os import chdir, close, environ, remove, rename, write
 from os.path import exists
-from pathlib import Path
 from pty import openpty  # type: ignore ; pty is not available on windows
 from re import findall
 from runpy import run_path
@@ -117,18 +116,14 @@ def rm_manifest():
 def restart_webservice():
     rm_manifest()
     try:
-        args = (Path.home() / '.webservice-args').read_bytes().decode().split()
-    except FileNotFoundError:
-        args = ()
-    try:
         verbose_run(
             'webservice',
             '--backend=kubernetes',
-            *args,
             newest_container_type(),
             'restart',
         )
     except CalledProcessError as e:
+        # https://gitlab.wikimedia.org/repos/cloud/toolforge/tools-webservice/-/blob/33813da4ac50eaafbfdbb38f6045a81685657cde/toolsws/cli/webservice.py#L576
         if b'Your webservice is taking quite while to restart.' in e.output:
             pass
 
