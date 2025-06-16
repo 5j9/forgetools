@@ -140,6 +140,8 @@ def run_install_script():
 
 def assert_webservice_type():
     o = verbose_run('webservice', 'status').stdout
+    if o == 'Your webservice is not running\n':
+        return
     webservice_type = (
         o.partition(b'Your webservice of type ')[2]
         .partition(b' is running on backend kubernetes')[0]
