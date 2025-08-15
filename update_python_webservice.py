@@ -65,8 +65,10 @@ def prepare_uv():
     except FileNotFoundError:
         cp = verbose_run('curl', '-LsSf', 'https://astral.sh/uv/install.sh')
         run(cp.stdout, shell=True)
-    rmtree(f'{HOME}/www/python/venv', ignore_errors=True)
-    environ['UV_PROJECT_ENVIRONMENT'] = f'{HOME}/www/python/venv'
+    venv = f'{HOME}www/python/venv'
+    rmtree(venv, ignore_errors=True)
+    environ['UV_PROJECT_ENVIRONMENT'] = venv
+    environ['VIRTUAL_ENV'] = venv
 
 
 def sync_up_venv():
