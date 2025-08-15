@@ -89,14 +89,7 @@ def main():
     parser = get_parser()
     args = parser.parse_args()
 
-    log_level_map = {
-        'DEBUG': logging.DEBUG,
-        'INFO': logging.INFO,
-        'WARNING': logging.WARNING,
-        'ERROR': logging.ERROR,
-        'CRITICAL': logging.CRITICAL,
-    }
-    logger.setLevel(log_level_map[args.log_level])
+    logger.setLevel(args.log_level)
 
     if not args.no_git_pull:
         update()
