@@ -1,9 +1,13 @@
+import logging
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 from os import execv
 from pathlib import Path
 from sys import argv, executable
 
 from commons import FORGETOOLS, verbose_run
+
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
 
 
 def update():
