@@ -67,6 +67,7 @@ def prepare_uv():
         run(cp.stdout, shell=True)
     venv = f'{HOME}www/python/venv'
     rmtree(venv, ignore_errors=True)
+    debug(f'UV_PROJECT_ENVIRONMENT set to {venv}')
     environ['UV_PROJECT_ENVIRONMENT'] = venv
     environ['VIRTUAL_ENV'] = venv
 
