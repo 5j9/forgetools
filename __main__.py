@@ -7,7 +7,6 @@ from sys import argv, executable
 from commons import FORGETOOLS, verbose_run
 
 logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
 
 
 def update():
@@ -27,6 +26,13 @@ def get_parser():
         '--no-git-pull',
         action='store_true',
         help='do not perform git pull for forgetools',
+    )
+    parser.add_argument(
+        '-l',
+        '--log-level',
+        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
+        default='INFO',
+        help='Set the logging level.',
     )
 
     sub_parsers = parser.add_subparsers(dest='sub_command')
@@ -82,6 +88,16 @@ def get_parser():
 def main():
     parser = get_parser()
     args = parser.parse_args()
+
+    log_level_map = {
+        'DEBUG': logging.DEBUG,
+        'INFO': logging.INFO,
+        'WARNING': logging.WARNING,
+        'ERROR': logging.ERROR,
+        'CRITICAL': logging.CRITICAL,
+    }
+    logger.setLevel(log_level_map[args.log_level])
+
     if not args.no_git_pull:
         update()
     sub_command = args.sub_command
