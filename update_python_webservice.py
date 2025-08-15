@@ -2,12 +2,11 @@
 """Update the source and restart `webservice --backend=kubernetes <type>`"""
 
 from logging import debug, info, warning
-from os import chdir, close, environ, remove, rename, write
+from os import chdir, close, remove, rename, write
 from os.path import exists
 from pty import openpty  # type: ignore ; pty is not available on windows
 from re import findall
 from runpy import run_path
-from shutil import rmtree
 from subprocess import CalledProcessError, Popen, run
 
 from commons import (
@@ -65,17 +64,14 @@ def prepare_uv():
     except FileNotFoundError:
         cp = verbose_run('curl', '-LsSf', 'https://astral.sh/uv/install.sh')
         run(cp.stdout, shell=True)
-    venv = f'{HOME}www/python/venv'
-    rmtree(venv, ignore_errors=True)
-    debug(f'UV_PROJECT_ENVIRONMENT set to {venv}')
-    environ['UV_PROJECT_ENVIRONMENT'] = venv
-    environ['VIRTUAL_ENV'] = venv
 
 
 def sync_up_venv():
     # ~ is / in the kubectl's shell
     prepare_uv()
-    shell_script = b'cd ~/www/python/src && uv sync -U && exit\n'
+    shell_script = (
+        b'cd ~/www/python/src && uv sync -U && mv -f .venv ../venv && exit\n'
+    )
     # Kubernetes terminates immediately on a non-tty process. Use pty instead.
     master, slave = openpty()
     try:
