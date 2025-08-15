@@ -119,7 +119,6 @@ def rm_manifest():
 
 def restart_webservice():
     rm_manifest()
-    verbose_run('webservice', 'stop')
     try:
         verbose_run(
             'webservice',
