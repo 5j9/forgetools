@@ -31,6 +31,8 @@ def newest_container_type(lang='python') -> str:
         [...]
     ```
     """
+    # sometimes the webservice -h command becomes unresponsive
+    verbose_run('webservice', 'stop')
     webservice_help = cached_check_output('webservice', '-h')
     type_version_pairs = findall(rf'\* \b({lang}([\d.]+))\b', webservice_help)
     return max_version(type_version_pairs)
