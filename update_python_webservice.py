@@ -115,12 +115,13 @@ def rm_manifest():
 
 def restart_webservice():
     rm_manifest()
+    verbose_run('webservice', 'stop')
     try:
         verbose_run(
             'webservice',
             '--backend=kubernetes',
             newest_container_type(),
-            'restart',
+            'start',
         )
     except CalledProcessError as e:
         # https://gitlab.wikimedia.org/repos/cloud/toolforge/tools-webservice/-/blob/33813da4ac50eaafbfdbb38f6045a81685657cde/toolsws/cli/webservice.py#L576
