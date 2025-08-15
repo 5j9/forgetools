@@ -2,7 +2,7 @@
 """Update the source and restart `webservice --backend=kubernetes <type>`"""
 
 from logging import debug, info, warning
-from os import chdir, close, environ, remove, rename, write
+from os import chdir, close, remove, rename, write
 from os.path import exists
 from pty import openpty  # type: ignore ; pty is not available on windows
 from re import findall
@@ -57,7 +57,6 @@ def pull_updates() -> None:
 
 
 def prepare_uv():
-    environ['VIRTUAL_ENV'] = HOME + 'www/python/venv'
     try:
         verbose_run('uv', 'self', 'update')
     except FileNotFoundError:
@@ -68,7 +67,11 @@ def prepare_uv():
 def sync_up_venv():
     # ~ is / in the kubectl's shell
     prepare_uv()
-    shell_script = b'uv sync -U --directory ~/www/python/src && exit\n'
+    shell_script = (
+        b'uv sync -U --directory ~/www/python/src '
+        b'&& mv ~/www/python/src/.venv ~/www/python/venv '
+        b'&& exit\n'
+    )
     # Kubernetes terminates immediately on a non-tty process. Use pty instead.
     master, slave = openpty()
     try:
